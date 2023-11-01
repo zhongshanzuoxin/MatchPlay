@@ -1,0 +1,2 @@
+class GroupTag < ApplicationRecord
+end

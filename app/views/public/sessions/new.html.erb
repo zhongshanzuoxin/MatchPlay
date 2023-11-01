@@ -1,0 +1,31 @@
+<div class="container mt-5">
+  <h2 class="text-center mb-md-3 mb-lg-5">
+    <span class="bg-light p-2">ログイン</span>
+  </h2>
+
+  <div class="col-12 col-md-6 mx-auto">
+    <%= form_with(model: resource, url: session_path(resource_name)) do |f| %>
+      <%= render "public/shared/error_messages", resource: resource %>
+
+      <div class="mb-3">
+        <label for "email" class="form-label">メールアドレス</label>
+        <%= f.text_field :email, id: 'email', class: 'form-control', autofocus: true, autocomplete: "email", placeholder: 'メールアドレス' %>
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">パスワード（6文字以上）</label>
+        <%= f.password_field :password, id: "password", class: "form-control", placeholder: "パスワード" %>
+      </div>
+      <div class="mb-3 text-center">
+        <%= f.submit "ログイン", class: "btn btn-success btn-block col-12 mt-3" %>
+      </div>
+    <% end %>
+  </div>
+
+  <h4 class="text-left ml-5 mb-3">
+    <span class="bg-light p-2">登録がお済みでない方</span>
+  </h4>
+  <div class="d-flex ml-4">
+    <div class="mx-1"></div>
+    <span><%= link_to 'こちら', new_user_registration_path %>から新規登録を行ってください。</span>
+  </div>
+</div>
