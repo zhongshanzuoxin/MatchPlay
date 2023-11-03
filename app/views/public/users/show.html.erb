@@ -1,2 +1,10 @@
-<h1>Public::Users#show</h1>
-<p>Find me in app/views/public/users/show.html.erb</p>
+<h1><%= @user.name %></h1>
+<%= link_to "プロフィール編集", edit_user_path(@user) %>
+
+<% if current_user != @user %>
+  <% if current_user.blocks?(@user) %>
+    <%= link_to "ブロック解除", user_block_path(@user), method: :delete %>
+  <% else %>
+    <%= link_to "ブロック", user_block_path(@user), method: :post %>
+  <% end %>
+<% end %>

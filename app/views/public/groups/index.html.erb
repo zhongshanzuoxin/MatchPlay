@@ -1,2 +1,73 @@
-<h1>Public::Groups#index</h1>
-<p>Find me in app/views/public/groups/index.html.erb</p>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-6 mb-3">
+      <%= form_with(url: search_groups_path, method: "get") do |form| %>
+
+        <!-- 上段のセレクトボックス -->
+        <div class="mb-3 d-flex justify-content-center">
+          <div class="col-6 text-center">
+            <div class="d-flex flex-column align-items-center">
+              <label for="selectBox1" class="form-label">セレクトボックス1</label>
+              <%= form.select :tag1, Tag.all.map { |tag| [tag.tag_name, tag.tag_name] }, { class: "form-select col-6" } %>
+            </div>
+          </div>
+          <div class="col-6 text-center">
+            <div class="d-flex flex-column align-items-center">
+              <label for="selectBox2" class="form-label">セレクトボックス2</label>
+              <%= form.select :tag2, Tag.all.map { |tag| [tag.tag_name, tag.tag_name] }, { class: "form-select col-6" } %>
+            </div>
+          </div>
+        </div>
+
+        <!-- 下段のセレクトボックス -->
+        <div class="mb-3 d-flex justify-content-center">
+          <div class="col-6 text-center">
+            <div class="d-flex flex-column align-items-center">
+              <label for="selectBox3" class="form-label">セレクトボックス3</label>
+              <%= form.select :tag3, Tag.all.map { |tag| [tag.tag_name, tag.tag_name] }, { class: "form-select col-6" } %>
+            </div>
+          </div>
+          <div class="col-6 text-center">
+            <div class="d-flex flex-column align-items-center">
+              <label for="selectBox4" class="form-label">セレクトボックス4</label>
+              <%= form.select :tag4, Tag.all.map { |tag| [tag.tag_name, tag.tag_name] }, { class: "form-select col-6" } %>
+            </div>
+          </div>
+        </div>
+
+        <!-- ゲームタイトル -->
+        <div class="col-12 mb-3 text-center">
+          <label for="Input" class="form-label">ゲームタイトル</label>
+          <%= form.text_field :game_title, class: "form-control", placeholder: "ゲームタイトル" %>
+        </div>
+
+        <!-- ボタン -->
+        <div class="col-12 text-center mt-3">
+          <button type="submit" class="btn btn-primary btn-block col-12 col-md-2">検索する</button>
+        </div>
+      </div>
+    <% end %>
+
+    <% @groups.each do |group| %>
+      <div class="row d-flex justify-content-center mt-5">
+        <div class="col-12 col-md-6">
+          <div class="card">
+            <div class="card-header">
+              <%= group.game_title %>
+            </div>
+            <div class="card-body">
+              <p class="card-title"><%= group.user.name %></p>
+              <p><% group.tags.each do |tag| %>
+              <%= tag.tag_name %>
+              <%= ',' unless tag == group.tags.last %>
+            <% end %>
+            </p>
+              <p class="card-text"><%= group.introduction %></p>
+              <%= link_to "参加する", group_path(group), class: "btn btn-primary" %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

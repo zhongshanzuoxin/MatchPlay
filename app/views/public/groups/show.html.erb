@@ -1,2 +1,59 @@
-<h1>Public::Groups#show</h1>
-<p>Find me in app/views/public/groups/show.html.erb</p>
+<div class="container mt-5 d-flex justify-content-center">
+  <div class="col-md-6">
+    <!-- 募集の内容 -->
+<div class="card">
+  <div class="card-body">
+    <!-- 編集ボタン -->
+    <button type="button" class="btn btn-primary btn-sm float-end">編集</button>
+    <h5 class="card-title">募集タイトル</h5>
+    <p class="card-text">募集の詳細内容がここに表示されます.</p>
+    <p class="card-text">オーナーのファイターID: 12345</p>
+  </div>
+</div>
+
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 col-lg-8">
+      <!-- チャット欄 -->
+      <div class="card mt-3">
+        <div class="card-header">
+          チャット
+        </div>
+        <div class="card-body">
+          <!-- チャットメッセージ入力 -->
+</div>
+
+<div class="card-footer">
+  <!-- チャットメッセージ一覧を表示 -->
+<div id="chat">
+  <%= form_tag '#' do %>
+    <%= text_area_tag 'message', nil, placeholder: 'Type your message...' %>
+    <%= submit_tag 'Send' %>
+  <% end %>
+  <div id="messages"></div>
+</div>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-12 col-lg-4 mt-3">
+      <!-- 参加しているユーザー欄 -->
+      <div class="card">
+        <div class="card-header">
+          参加ユーザー
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">ユーザー1</li>
+          <li class="list-group-item">ユーザー2</li>
+          <li class="list-group-item">ユーザー3</li>
+          <!-- 他のユーザーをリストアップ -->
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

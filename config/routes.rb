@@ -16,10 +16,17 @@ Rails.application.routes.draw do
   #ユーザー側
   scope module: :public do
     root "homes#top"
-    get 'block_users/index', to: "block_users#index"
-    resources :groups, only: [:index, :show, :new, :edit, :create, :update, :destroy]
+    resources :groups, only: [:index, :show, :new, :edit, :create, :update, :destroy] do
+      member do
+        get 'chat'
+      end
+    end
+    get '/search_groups', to: 'groups#search', as: 'search_groups'
     resources :messages, only: [:create, :destroy]
-    resources :users, only: [:show, :update]
+    resources :users, only: [:show, :update] do
+      post "block_user", to: "block_users#create"
+      delete "block_user", to: "block_users#destroy"
+    end
   end
 
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html

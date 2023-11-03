@@ -1,0 +1,11 @@
+<h1>ブロックしたユーザー一覧</h1>
+
+<% if @blocked_users.any? %>
+  <ul>
+    <% @blocked_users.each do |user| %>
+      <li><%= user.name %></li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>まだ誰もブロックしていません。</p>
+<% end %>
