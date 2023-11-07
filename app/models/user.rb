@@ -4,18 +4,30 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-         has_many :block_users, foreign_key: 'blocker_id', class_name: 'BlockUser', dependent: :destroy
-         has_many :blocked_users, through: :block_users, source: :blocked
-         has_many :blocked_by_users, foreign_key: 'blocked_id', class_name: 'BlockUser', dependent: :destroy
-         has_many :blocked_users_by, through: :blocked_by_users, source: :blocker
          has_one :group
          has_many :chats
+         has_one_attached :profile_image
+         
+         has_many :blocked, class_name: "Relationship", foreign_key: "blocked_id", dependent: :destroy
+         has_many :blocking, class_name: "Relationship", foreign_key: "blocking_id", dependent: :destroy
+         has_many :blocking_user, through: :blocked, source: :blocking
+         has_many :blocked_user, through: :blocking, source: :blocked
 
-         def block!(user)
-           blocks.create(blocked: user)
-         end
+        # ユーザーをブロックする
+        def block(user_id)
+          blocked.create(blocking_id: user_id)
+        end
+        # ユーザーのブロックを解除
+        def unblock(user_id)
+          blocked.find_by(blocking_id: user_id).destroy
+        end
+        # ブロックしているか確認をおこなう
+        def blocking?(user)
+          blocking_user.include?(user)
+        end
 
-         def unblock!(user)
-           blocks.find_by(blocked: user).destroy
-         end
+         
+        def has_created_group?
+          group.present?
+        end
 end

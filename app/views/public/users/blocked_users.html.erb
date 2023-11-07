@@ -1,11 +1,15 @@
-<h1>ブロックしたユーザー一覧</h1>
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <h1 class="display-6 text-center mb-4">ブロックしているユーザー</h1>
+      <ul class="list-group">
+        <% @blocked_users.each do |blocked_user| %>
+          <li class="list-group-item">
+            <%= link_to blocked_user.name, user_path(blocked_user) %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</div>
 
-<% if @blocked_users.any? %>
-  <ul>
-    <% @blocked_users.each do |user| %>
-      <li><%= user.name %></li>
-    <% end %>
-  </ul>
-<% else %>
-  <p>まだ誰もブロックしていません。</p>
-<% end %>

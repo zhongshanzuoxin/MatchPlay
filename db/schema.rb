@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_11_03_105602) do
+ActiveRecord::Schema.define(version: 2023_11_07_041914) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -52,15 +52,6 @@ ActiveRecord::Schema.define(version: 2023_11_03_105602) do
     t.index ["reset_password_token"], name: "index_admins_on_reset_password_token", unique: true
   end
 
-  create_table "block_users", force: :cascade do |t|
-    t.integer "blocker_id"
-    t.integer "blocked_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["blocked_id"], name: "index_block_users_on_blocked_id"
-    t.index ["blocker_id"], name: "index_block_users_on_blocker_id"
-  end
-
   create_table "chats", force: :cascade do |t|
     t.text "message"
     t.integer "user_id", null: false
@@ -84,7 +75,7 @@ ActiveRecord::Schema.define(version: 2023_11_03_105602) do
   create_table "groups", force: :cascade do |t|
     t.text "introduction"
     t.integer "user_id"
-    t.string "game_title"
+    t.text "game_title"
     t.string "tag"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -100,6 +91,13 @@ ActiveRecord::Schema.define(version: 2023_11_03_105602) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "relationships", force: :cascade do |t|
+    t.integer "blocked_id"
+    t.integer "blocking_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "tags", force: :cascade do |t|
     t.string "tag_name"
     t.datetime "created_at", precision: 6, null: false
@@ -111,7 +109,6 @@ ActiveRecord::Schema.define(version: 2023_11_03_105602) do
     t.string "encrypted_password", default: "", null: false
     t.string "name", null: false
     t.text "introduction"
-    t.string "avatar"
     t.boolean "is_active", default: true, null: false
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
@@ -124,8 +121,6 @@ ActiveRecord::Schema.define(version: 2023_11_03_105602) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "block_users", "users", column: "blocked_id"
-  add_foreign_key "block_users", "users", column: "blocker_id"
   add_foreign_key "chats", "groups"
   add_foreign_key "chats", "users"
   add_foreign_key "group_tags", "groups"

@@ -1,23 +1,32 @@
 class Public::GroupsController < ApplicationController
 
   def index
-    @groups = Group.all
-  end
+    selected_tags = [
+      params[:tag_ids1],
+      params[:tag_ids2],
+      params[:tag_ids3],
+      params[:tag_ids4]
+    ].compact.flatten.map(&:to_i)
 
-  def search
-    @groups = Group.all
-    tag_params = [params[:tag1], params[:tag2], params[:tag3], params[:tag4]]
+    game_title = params[:game_title]
 
-    tag_params.each do |tag|
-    if tag.present?
-      @groups = @groups.where(tag: tag)
+    # タグとゲームタイトルの検索クエリを組み立てる
+    groups = Group.includes(:tags)
+
+    if selected_tags.present?
+      groups = groups.where(group_tags: { tag_id: selected_tags })
     end
+
+    if game_title.present?
+      groups = groups.where("LOWER(groups.game_title) LIKE LOWER(?)", "%#{ActiveRecord::Base.sanitize_sql_like(game_title)}%")
+    end
+    @groups = selected_tags.present? || game_title.present? ? groups.distinct : []
+    @selected_tags = Tag.where(id: selected_tags)
+    @other_tags = Tag.joins(:group_tags).where.not(id: selected_tags).distinct
   end
 
-    if params[:game_title].present?
-      @groups = @groups.where("game_title ILIKE ?", "%#{params[:game_title]}%")
-    end
-  end
+
+
 
   def show
     @group = Group.find(params[:id])
@@ -47,12 +56,13 @@ def create
 end
 
   def edit
+    @group = Group.find(params[:id])
   end
 
   private
 
-def group_params
-  params.require(:group).permit(:introduction, :game_title, tag_ids: [])
-end
+  def group_params
+    params.require(:group).permit(:introduction, :game_title, tag_ids: [])
+  end
 
 end
