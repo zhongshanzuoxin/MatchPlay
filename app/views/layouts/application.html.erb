@@ -34,10 +34,10 @@
             <%= link_to 'ログアウト', destroy_admin_session_path, method: :get, class: 'btn btn-dark' %>
           </li>
           <li class="nav-item">
-            <%= link_to 'ユーザー画像一覧', admin_images_path, class: 'btn btn-dark' %>
+            <%= link_to 'ユーザー画像一覧', admin_users_path, class: 'btn btn-dark' %>
           </li>
           <li class="nav-item">
-            <%= link_to 'ユーザー画像登録', new_admin_image_path, class: 'btn btn-dark' %>
+            <%= link_to 'ユーザー画像登録', admin_users_path, class: 'btn btn-dark' %>
           </li>
         <% elsif user_signed_in? %>
           <li class="nav-item">

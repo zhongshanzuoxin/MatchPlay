@@ -7,7 +7,6 @@
     <button type="button" class="btn btn-primary btn-sm float-end">編集</button>
     <h5 class="card-title">募集タイトル</h5>
     <p class="card-text">募集の詳細内容がここに表示されます.</p>
-    <p class="card-text">オーナーのファイターID: 12345</p>
   </div>
 </div>
 
@@ -27,15 +26,16 @@
 </div>
 
 <div class="card-footer">
-  <!-- チャットメッセージ一覧を表示 -->
-<div id="chat">
-  <%= form_tag '#' do %>
-    <%= text_area_tag 'message', nil, placeholder: 'Type your message...' %>
-    <%= submit_tag 'Send' %>
-  <% end %>
-  <div id="messages"></div>
+  <!-- チャットルームのメッセージ表示エリア -->
+<div id = 'messages'>
+  <%= render @messages %>
 </div>
+<form>
+  <label>Say something:</label><br>
+  <input type="text" data-behavior="room_speaker">
+</form>
 </div>
+
 
         </div>
       </div>

@@ -1,4 +1,5 @@
 class Public::GroupsController < ApplicationController
+  before_action :check_if_user_has_group, only: [:new]
 
   def index
     selected_tags = [
@@ -25,12 +26,9 @@ class Public::GroupsController < ApplicationController
     @other_tags = Tag.joins(:group_tags).where.not(id: selected_tags).distinct
   end
 
-
-
-
   def show
     @group = Group.find(params[:id])
-    @messages = @group.chats
+    @messages = Message.all
   end
 
   def new
@@ -55,11 +53,39 @@ def create
   end
 end
 
+def update
+  @group = Group.find(params[:id])
+
+  if @group.update(group_params)
+    redirect_to root_path, notice: 'グループが更新されました'
+  else
+    render :edit
+  end
+end
+
+def destroy
+  @group = Group.find(params[:id])
+
+  if @group.user == current_user
+    @group.destroy
+    redirect_to root_path, notice: 'グループが削除されました'
+  else
+    redirect_to root_path, alert: 'グループを削除する権限がありません'
+  end
+end
+
+
   def edit
     @group = Group.find(params[:id])
   end
 
   private
+  
+  def check_if_user_has_group
+    if current_user.group.present?
+      redirect_to root_path, alert: '既にグループを作成しています'
+    end
+  end
 
   def group_params
     params.require(:group).permit(:introduction, :game_title, tag_ids: [])

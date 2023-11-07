@@ -20,14 +20,8 @@ devise_for :users,skip: [:passwords], controllers: {
 
 scope module: :public do
   root "homes#top"
-  resources :groups, only: [:index, :show, :new, :edit, :create, :update, :destroy] do
-    member do
-      get 'chat'
-    end
-  end
-  get '/search_groups', to: 'groups#search', as: 'search_groups'
-  resources :messages, only: [:create, :destroy]
-
+  resources :groups, only: [:index, :show, :new, :edit, :create, :update, :destroy]
+  mount ActionCable.server => '/cable'
   resources :users, only: [:show, :update] do
       member do
       get :blocked_users  # ブロックしているユーザーの一覧を表示するアクション

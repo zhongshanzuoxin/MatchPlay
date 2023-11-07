@@ -1,4 +1,5 @@
 class Public::UsersController < ApplicationController
+  before_action :authenticate_user, only: [:blocked_users]
 
   def show
     @user = User.find(params[:id])
@@ -21,6 +22,12 @@ class Public::UsersController < ApplicationController
   end
 
   private
+  
+  def authenticate_user
+    unless current_user != @user
+      redirect_to root_path, alert: '他のユーザーのブロック一覧にアクセスする権限がありません'
+    end
+  end
 
   def user_params
     params.require(:user).permit(:name, :introduction)
