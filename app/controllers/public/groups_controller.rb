@@ -1,5 +1,6 @@
 class Public::GroupsController < ApplicationController
-  before_action :check_if_user_has_group, only: [:new]
+  before_action :ensure_correct_user, only: [:edit, :update]
+  before_action :check_user_can_create_only_one_group, only: [:new, :create]
 
   def index
     selected_tags = [
@@ -26,20 +27,53 @@ class Public::GroupsController < ApplicationController
     @other_tags = Tag.joins(:group_tags).where.not(id: selected_tags).distinct
   end
 
-  def show
-    @group = Group.find(params[:id])
-    @messages = Message.all
+def join
+  @group = Group.find(params[:id])
+
+  if @group.users.count < @group.max_users
+    if !@group.users.include?(current_user)
+      @group.users << current_user
+    end
+    redirect_to group_path(@group), notice: "グループに参加しました。"
+  else
+    redirect_to group_path(@group), alert: "グループの最大人数に達しているため、参加できません。"
   end
+end
+
+def leave
+  @group = Group.find(params[:id])
+
+  if @group.users.include?(current_user)
+    @group.users.delete(current_user)
+    flash[:notice] = "グループから退出しました。"
+  else
+    flash[:alert] = "グループから退出できませんでした。"
+  end
+
+  redirect_to group_path(@group)
+end
+
+
+def show
+  @group = Group.find(params[:id])
+  @tags = @group.tags
+
+  # ユーザーがグループに参加しているかどうかを確認
+  if @group.users.include?(current_user) || @group.owner == current_user
+
+  else
+    flash[:error] = "このグループに参加していないため、アクセスできません。"
+    redirect_to root_path
+  end
+end
 
   def new
     @group = Group.new
   end
 
 def create
-  if current_user.group.present?
-    redirect_to root_path, alert: '既にグループを作成しています'
-  else
-    @group = current_user.build_group(group_params)
+    @group = Group.new(group_params)
+    @group.owner_id = current_user.id
 
     # タグ情報を取得し、関連付け
     tag_ids = params[:group][:tag_ids]
@@ -50,14 +84,13 @@ def create
     else
       render :new
     end
-  end
 end
 
 def update
   @group = Group.find(params[:id])
 
   if @group.update(group_params)
-    redirect_to root_path, notice: 'グループが更新されました'
+    redirect_to group_path(@group), notice: 'グループが更新されました'
   else
     render :edit
   end
@@ -66,7 +99,7 @@ end
 def destroy
   @group = Group.find(params[:id])
 
-  if @group.user == current_user
+  if @group.owner == current_user
     @group.destroy
     redirect_to root_path, notice: 'グループが削除されました'
   else
@@ -80,15 +113,22 @@ end
   end
 
   private
-  
-  def check_if_user_has_group
-    if current_user.group.present?
-      redirect_to root_path, alert: '既にグループを作成しています'
+      #ユーザーがグループを所持しているか判定
+  def check_user_can_create_only_one_group
+    if current_user.owned_groups.any?
+      redirect_to root_path, alert: "既にグループを作成済みです"
+    end
+  end
+
+  def ensure_correct_user
+    @group = Group.find(params[:id])
+    unless @group.owner_id == current_user.id
+      redirect_to root_path
     end
   end
 
   def group_params
-    params.require(:group).permit(:introduction, :game_title, tag_ids: [])
+    params.require(:group).permit(:introduction, :game_title, :max_users, tag_ids: [])
   end
 
 end

@@ -4,14 +4,18 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-         has_one :group
-         has_many :chats
+         has_many :group_users
+         has_many :groups, through: :group_users
+         has_many :owned_groups, class_name: 'Group', foreign_key: :owner_id
+         has_many :messages
          has_one_attached :profile_image
-         
+
          has_many :blocked, class_name: "Relationship", foreign_key: "blocked_id", dependent: :destroy
          has_many :blocking, class_name: "Relationship", foreign_key: "blocking_id", dependent: :destroy
          has_many :blocking_user, through: :blocked, source: :blocking
          has_many :blocked_user, through: :blocking, source: :blocked
+         
+         
 
         # ユーザーをブロックする
         def block(user_id)
@@ -26,8 +30,4 @@ class User < ApplicationRecord
           blocking_user.include?(user)
         end
 
-         
-        def has_created_group?
-          group.present?
-        end
 end

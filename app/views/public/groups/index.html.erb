@@ -49,31 +49,43 @@
       </div>
     <% end %>
 
-    <% @groups.each do |group| %>
-      <div class="row d-flex justify-content-center mt-5">
-        <div class="col-12 col-md-6">
-          <div class="card">
-            <div class="card-header">
-              <%= group.game_title %>
-            </div>
-            <div class="card-body">
-              <p class="card-title"><%= group.user.name %></p>
+<% @groups.each do |group| %>
+  <div class="row d-flex justify-content-center mt-5">
+    <div class="col-12 col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <%= group.game_title %>
+        </div>
+        <div class="card-body">
+          <p class="card-title"><%= group.owner.name %></p>
           <p>
-            <% group.tags.each do |tag| %>
-              <%= tag.tag_name %>
-              <%= ',' unless tag == group.tags.last %>
-               
-               <% end %>
-              <% unless @other_tags.empty? %>
-              <%= @other_tags.map(&:tag_name).join(', ') %>
+              <% @selected_tags.each do |tag| %>
+              <span class="badge bg-primary me-2"><%= tag.tag_name %></span>
+              <% end %>
+              <% @other_tags.each do |tag| %>
+              <span class="badge bg-primary me-2"><%= tag.tag_name %></span>
               <% end %>
           </p>
-              <p class="card-text"><%= group.introduction %></p>
-              <%= link_to "参加する", group_path(group), class: "btn btn-primary" %>
-            </div>
-          </div>
+          <p class="card-text"><%= group.introduction %></p>
+<% if current_user %>
+  <% if group.users.include?(current_user) %>
+    <!-- 参加している場合の表示 -->
+    <p><%= link_to "参加中のグループを見る", group_path(group), class: "btn btn-primary" %></p>
+  <% else %>
+    <!-- 参加していない場合のボタン表示 -->
+    <%= link_to "このグループに参加する", join_group_path(group), class: "btn btn-primary" %>
+  <% end %>
+
+  <% if current_user.groups.include?(group) && !group.users.include?(current_user) %>
+    <!-- 他のグループに参加中の場合の表示 -->
+    <p>他のグループに参加しています。</p>
+  <% end %>
+<% end %>
         </div>
       </div>
-    <% end %>
+    </div>
+  </div>
+<% end %>
+
   </div>
 </div>

@@ -1,15 +1,21 @@
 <div class="container mt-5 d-flex justify-content-center">
   <div class="col-md-6">
     <!-- 募集の内容 -->
-<div class="card">
-  <div class="card-body">
-    <!-- 編集ボタン -->
-    <button type="button" class="btn btn-primary btn-sm float-end">編集</button>
-    <h5 class="card-title">募集タイトル</h5>
-    <p class="card-text">募集の詳細内容がここに表示されます.</p>
-  </div>
-</div>
-
+    <div class="card">
+      <div class="card-body">
+        <!-- 編集ボタン -->
+    <% if @group.owner == current_user %>
+      <%= link_to "グループを削除", group_path(@group), method: :delete, data: { confirm: "本当に削除しますか？" }, class: "btn btn-danger btn-sm float-end" %>
+    <% elsif @group.users.include?(current_user) %>
+      <%= link_to "退出する", leave_group_path(@group), method: :delete, class: "btn btn-primary btn-sm float-end" %>
+    <% end %>
+        <% @tags.each do |tag| %>
+          <span class="badge bg-primary me-2"><%= tag.tag_name %></span>
+        <% end %>
+        <h5 class="card-title"><%= @group.game_title %></h5>
+        <p class="card-text"><%= @group.introduction %></p>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -22,22 +28,21 @@
           チャット
         </div>
         <div class="card-body">
-          <!-- チャットメッセージ入力 -->
-</div>
-
-<div class="card-footer">
-  <!-- チャットルームのメッセージ表示エリア -->
-<div id = 'messages'>
-  <%= render @messages %>
-</div>
-<form>
-  <label>Say something:</label><br>
-  <input type="text" data-behavior="room_speaker">
-</form>
-</div>
-
-
+          <div id="messages">
+            <%= render @group.messages %>
+          </div>
         </div>
+
+        <div class="card-footer">
+          <%= form_with model: [@group, Message.new], url: group_messages_path(@group), local: false, data: { remote: true } do |f| %>
+            <div class="mb-3">
+              <%= f.text_area :content, id: "myInput", class: "form-control" %>
+            </div>
+            <%= f.submit "送信", class: "btn btn-primary" %>
+          <% end %>
+        </div>
+<div id="group-data" data-group-id="<%= @group.id %>"></div>
+
       </div>
     </div>
 
@@ -46,12 +51,14 @@
       <div class="card">
         <div class="card-header">
           参加ユーザー
+          <span class="float-end">
+            グループホスト: <%= @group.owner.name %>
+          </span>
         </div>
         <ul class="list-group list-group-flush">
-          <li class="list-group-item">ユーザー1</li>
-          <li class="list-group-item">ユーザー2</li>
-          <li class="list-group-item">ユーザー3</li>
-          <!-- 他のユーザーをリストアップ -->
+          <% @group.users.each do |user| %>
+            <li class="list-group-item"><%= user.name %></li>
+          <% end %>
         </ul>
       </div>
     </div>
