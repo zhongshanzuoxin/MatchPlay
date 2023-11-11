@@ -4,88 +4,93 @@
       <%= form_with(url: groups_path, method: "get") do |form| %>
 
         <!-- 上段のセレクトボックス -->
-<div class="mb-3 d-flex justify-content-center">
-  <div class="col-6 text-center">
-    <div class="d-flex flex-column align-items-center">
-      <label for="selectBox1" class="form-label">セレクトボックス1</label>
-      <%= form.select 'tag_ids1[]', options_for_select(Tag.all.map { |tag| [tag.tag_name, tag.id] }, params[:tag_ids1]), include_blank: '指定しない', class: "form-select" %>
-    </div>
-  </div>
-  <div class="col-6 text-center">
-    <div class="d-flex flex-column align-items-center">
-      <label for="selectBox2" class="form-label">セレクトボックス2</label>
-      <%= form.select 'tag_ids2[]', options_for_select(Tag.all.map { |tag| [tag.tag_name, tag.id] }, params[:tag_ids2]), include_blank: '指定しない', class: "form-select" %>
-    </div>
-  </div>
-</div>
+        <div class="mb-3 d-flex justify-content-center">
+          <div class="col-6 text-center">
+            <div class="d-flex flex-column align-items-center">
+              <%= form.label 'tag_ids1[]', 'タグを選択', class: 'form-label' %>
+              <%= form.select 'tag_ids1[]', options_for_select(Tag.all.map { |tag| [tag.tag_name, tag.id] }, params[:tag_ids1]), include_blank: '指定しない', class: "form-select" %>
+            </div>
+          </div>
+          <div class="col-6 text-center">
+            <div class="d-flex flex-column align-items-center">
+              <%= form.label 'tag_ids2[]', 'タグを選択', class: 'form-label' %>
+              <%= form.select 'tag_ids2[]', options_for_select(Tag.all.map { |tag| [tag.tag_name, tag.id] }, params[:tag_ids2]), include_blank: '指定しない', class: "form-select" %>
+            </div>
+          </div>
+        </div>
 
-<!-- 下段のセレクトボックス -->
-<div class="mb-3 d-flex justify-content-center">
-  <div class="col-6 text-center">
-    <div class="d-flex flex-column align-items-center">
-      <label for="selectBox3" class="form-label">セレクトボックス3</label>
-      <%= form.select 'tag_ids3[]', options_for_select(Tag.all.map { |tag| [tag.tag_name, tag.id] }, params[:tag_ids3]), include_blank: '指定しない', class: "form-select" %>
-    </div>
-  </div>
-  <div class="col-6 text-center">
-    <div class="d-flex flex-column align-items-center">
-      <label for="selectBox4" class "form-label">セレクトボックス4</label>
-      <%= form.select 'tag_ids4[]', options_for_select(Tag.all.map { |tag| [tag.tag_name, tag.id] }, params[:tag_ids4]), include_blank: '指定しない', class: "form-select" %>
-    </div>
-  </div>
-</div>
-
+        <!-- 下段のセレクトボックス -->
+        <div class="mb-3 d-flex justify-content-center">
+          <div class="col-6 text-center">
+            <div class="d-flex flex-column align-items-center">
+              <%= form.label 'tag_ids3[]', 'タグを選択', class: 'form-label' %>
+              <%= form.select 'tag_ids3[]', options_for_select(Tag.all.map { |tag| [tag.tag_name, tag.id] }, params[:tag_ids3]), include_blank: '指定しない', class: "form-select" %>
+            </div>
+          </div>
+          <div class="col-6 text-center">
+            <div class="d-flex flex-column align-items-center">
+              <%= form.label 'tag_ids4[]', 'タグを選択', class: 'form-label' %>
+              <%= form.select 'tag_ids4[]', options_for_select(Tag.all.map { |tag| [tag.tag_name, tag.id] }, params[:tag_ids4]), include_blank: '指定しない', class: "form-select" %>
+            </div>
+          </div>
+        </div>
 
         <!-- ゲームタイトル -->
-    <div class="col-12 mb-3 text-center">
-      <label for="game_title" class="form-label">ゲームタイトル</label>
-      <%= form.text_field :game_title, value: params[:game_title], name: 'game_title', class: "form-control", placeholder: "ゲームタイトル" %>
-    </div>
+        <div class="col-12 mb-3 text-center">
+          <%= form.label 'game_title', 'ゲームタイトル', class: 'form-label', for: 'game_title' %>
+          <%= form.text_field :game_title, value: params[:game_title], name: 'game_title', class: "form-control", placeholder: "ゲームタイトル", id: "game_title" %>
+        </div>
 
         <!-- ボタン -->
         <div class="col-12 text-center mt-3">
-          <%= form.submit '検索', class: 'btn btn-primary btn-block col-12 col-md-2' %>
+          <%= form.submit '検索', class: 'btn btn-primary btn-block col-12 col-md-3' %>
         </div>
       </div>
     <% end %>
 
-<% @groups.each do |group| %>
-  <div class="row d-flex justify-content-center mt-5">
-    <div class="col-12 col-md-6">
-      <div class="card">
-        <div class="card-header">
-          <%= group.game_title %>
-        </div>
-        <div class="card-body">
-          <p class="card-title"><%= group.owner.name %></p>
-          <p>
-              <% @selected_tags.each do |tag| %>
-              <span class="badge bg-primary me-2"><%= tag.tag_name %></span>
-              <% end %>
-              <% @other_tags.each do |tag| %>
-              <span class="badge bg-primary me-2"><%= tag.tag_name %></span>
-              <% end %>
-          </p>
-          <p class="card-text"><%= group.introduction %></p>
-<% if current_user %>
-  <% if group.users.include?(current_user) %>
-    <!-- 参加している場合の表示 -->
-    <p><%= link_to "参加中のグループを見る", group_path(group), class: "btn btn-primary" %></p>
-  <% else %>
-    <!-- 参加していない場合のボタン表示 -->
-    <%= link_to "このグループに参加する", join_group_path(group), class: "btn btn-primary" %>
-  <% end %>
 
-  <% if current_user.groups.include?(group) && !group.users.include?(current_user) %>
-    <!-- 他のグループに参加中の場合の表示 -->
-    <p>他のグループに参加しています。</p>
-  <% end %>
-<% end %>
-        </div>
-      </div>
-    </div>
-  </div>
-<% end %>
+    <% if @groups.present? %>
+      <% @groups.each do |group| %>
+        <div class="row d-flex justify-content-center mt-5">
+          <div class="col-12 col-md-6">
+            <div class="card">
+              <div class="card-header">
+                <%= group.game_title %>
+                <span id="user-count" class="float-end" data-group-id="<%= group.id %>">参加ユーザー<%= group.users.count + 1 %>/<%= group.max_users %></span>
+              </div>
 
+              <div class="card-body">
+                <p class="card-title"><%= group.owner.name %></p>
+                <p>
+                  <% @selected_tags.each do |tag| %>
+                    <span class="badge bg-primary me-2"><%= tag.tag_name %></span>
+                  <% end %>
+                  <% @other_tags.each do |tag| %>
+                    <span class="badge bg-primary me-2"><%= tag.tag_name %></span>
+                  <% end %>
+                </p>
+                <p class="card-text"><%= group.introduction %></p>
+                <% if current_user %>
+                  <% if group.users.include?(current_user) %>
+                    <!-- 参加している場合の表示 -->
+                    <p><%= link_to "参加中のグループを見る", group_path(group), class: "btn btn-primary" %></p>
+                  <% else %>
+                    <!-- 参加していない場合のボタン表示 -->
+                    <%= link_to "このグループに参加する", join_group_path(group), class: "btn btn-primary" %>
+                  <% end %>
+
+                  <% if current_user.groups.include?(group) && !group.users.include?(current_user) %>
+                    <!-- 他のグループに参加中の場合の表示 -->
+                    <p>他のグループに参加しています。</p>
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% elsif params[:tag_ids1].present? || params[:tag_ids2].present? || params[:tag_ids3].present? || params[:tag_ids4].present? || params[:game_title].present? %>
+      <p class="text-center">該当するグループがありません。</p>
+    <% end %>
   </div>
 </div>

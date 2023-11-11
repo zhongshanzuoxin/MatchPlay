@@ -8,6 +8,7 @@ class Group < ApplicationRecord
   
   validate :check_user_can_create_only_one_group
   validates :max_users, presence: true, numericality: { only_integer: true, greater_than: 0, less_than_or_equal_to: 20 }
+  validate :max_users_cannot_be_less_than_current_users
   
   def check_user_can_create_only_one_group
     if owner && owner.groups.where.not(id: self.id).any?
@@ -15,4 +16,17 @@ class Group < ApplicationRecord
     end
   end
   
+  def max_users_cannot_be_less_than_current_users
+    return unless max_users.present? && total_users_count.present?
+
+    if max_users < total_users_count
+      errors.add(:max_users, "最大人数は現在の参加人数よりも少なくできません")
+    end
+  end
+
+  # total_users_count メソッドを修正
+  def total_users_count
+    users.count + 1 # グループのオーナーも人数に含める
+  end
+
 end

@@ -16,3 +16,5 @@ ActiveStorage.start();
 import "./tag_select"
 import "./chat"
 import "./profile"
+import "./user_count"
+import "./user_list"

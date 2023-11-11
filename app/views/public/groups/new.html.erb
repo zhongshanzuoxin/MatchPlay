@@ -2,57 +2,55 @@
   <div class="row justify-content-center">
     <div class="col-12 col-lg-6 mb-3">
       <%= form_with(model: @group, local: true) do |form| %>
-<div class="col-12 mb-3 text-center">
-  <%= form.label :max_users, '最大人数', style: "white-space: nowrap;" %>
-</div>
-<div class="col-12 text-center">
-  <div class="col-1 mx-auto">
-    <%= form.number_field :max_users, in: 1..20, class: 'form-control', value: 1 %>
-  </div>
-</div>
+        <div class="col-12 mb-3 text-center">
+          <%= form.label :max_users, '最大人数', class: 'form-label', style: 'white-space: nowrap;' %>
+        </div>
+        <div class="col-12 text-center">
+          <div class="col-2 mx-auto">
+            <%= form.number_field :max_users, in: 1..20, class: 'form-control', value: 1 %>
+          </div>
+        </div>
 
-<!-- 上段のタグ選択 -->
-<div class="mb-3 d-flex justify-content-center">
-  <div class="col-6 text-center"> <!-- 左側の選択 -->
-    <label for="tagSelect1" class="form-label">タグを選択</label>
-    <%= form.select :tag_ids, Tag.all.map { |tag| [tag.tag_name, tag.id] }, { include_blank: '指定しない' }, { class: "form-select", id: "tagSelect1", name: "group[tag_ids][]" } %>
-  </div>
-  <div class="col-6 text-center"> <!-- 右側の選択 -->
-    <label for="tagSelect2" class="form-label">タグを選択</label>
-    <%= form.select :tag_ids, Tag.all.map { |tag| [tag.tag_name, tag.id] }, { include_blank: '指定しない' }, { class: "form-select", id: "tagSelect2", name: "group[tag_ids][]" } %>
-  </div>
-</div>
+        <!-- 上段のタグ選択 -->
+        <div class="mb-3 row justify-content-center">
+          <div class="col-6 text-center"> <!-- 左側の選択 -->
+            <%= form.label :tag_ids, 'タグを選択', class: 'form-label', for: 'tagSelect1' %>
+            <%= form.select :tag_ids, Tag.all.map { |tag| [tag.tag_name, tag.id] }, { include_blank: '指定しない' }, { class: 'form-select', id: 'tagSelect1', name: 'group[tag_ids][]' } %>
+          </div>
+          <div class="col-6 text-center"> <!-- 右側の選択 -->
+            <%= form.label :tag_ids, 'タグを選択', class: 'form-label', for: 'tagSelect2' %>
+            <%= form.select :tag_ids, Tag.all.map { |tag| [tag.tag_name, tag.id] }, { include_blank: '指定しない' }, { class: 'form-select', id: 'tagSelect2', name: 'group[tag_ids][]' } %>
+          </div>
+        </div>
 
-<!-- 下段のタグ選択 -->
-<div class="mb-3 d-flex justify-content-center">
-  <div class="col-6 text-center"> <!-- 左側の選択 -->
-    <label for="tagSelect3" class="form-label">タグを選択</label>
-    <%= form.select :tag_ids, Tag.all.map { |tag| [tag.tag_name, tag.id] }, { include_blank: '指定しない' }, { class: "form-select", id: "tagSelect3", name: "group[tag_ids][]" } %>
-  </div>
-  <div class="col-6 text-center"> <!-- 右側の選択 -->
-    <label for="tagSelect4" class="form-label">タグを選択</label>
-    <%= form.select :tag_ids, Tag.all.map { |tag| [tag.tag_name, tag.id] }, { include_blank: '指定しない' }, { class: "form-select", id: "tagSelect4", name: "group[tag_ids][]" } %>
-  </div>
-</div>
+        <!-- 下段のタグ選択 -->
+        <div class="mb-3 row justify-content-center">
+          <div class="col-6 text-center"> <!-- 左側の選択 -->
+            <%= form.label :tag_ids, 'タグを選択', class: 'form-label', for: 'tagSelect3' %>
+            <%= form.select :tag_ids, Tag.all.map { |tag| [tag.tag_name, tag.id] }, { include_blank: '指定しない' }, { class: 'form-select', id: 'tagSelect3', name: 'group[tag_ids][]' } %>
+          </div>
+          <div class="col-6 text-center"> <!-- 右側の選択 -->
+            <%= form.label :tag_ids, 'タグを選択', class: 'form-label', for: 'tagSelect4' %>
+            <%= form.select :tag_ids, Tag.all.map { |tag| [tag.tag_name, tag.id] }, { include_blank: '指定しない' }, { class: 'form-select', id: 'tagSelect4', name: 'group[tag_ids][]' } %>
+          </div>
+        </div>
 
-      </div>
+        <!-- ゲームタイトル -->
+        <div class="col-12 mb-3 text-center">
+          <%= form.label :game_title, 'ゲームタイトル', class: 'form-label', for: 'game_title' %>
+          <%= form.text_field :game_title, class: 'form-control', placeholder: 'ゲームタイトル', id: 'game_title' %>
+        </div>
 
-      <!-- ゲームタイトル -->
-      <div class="col-8 mb-3 text-center">
-        <label for="Input" class="form-label">ゲームタイトル</label>
-        <%= form.text_field :game_title, class: "form-control", placeholder: "ゲームタイトル" %>
-      </div>
+        <!-- テキスト入力 -->
+        <div class="col-12 mb-3 text-center">
+          <%= form.label :introduction, '募集の概要', class: 'form-label', for: 'exampleFormControlTextarea1' %>
+          <%= form.text_area :introduction, class: 'form-control', rows: 6, id: 'exampleFormControlTextarea1' %>
+        </div>
 
-      <!-- テキスト入力 -->
-      <div class="col-9 mb-3 text-center">
-        <label for="exampleFormControlTextarea1" class="form-label">募集の概要</label>
-        <%= form.text_area :introduction, class: "form-control", rows: 6 %>
-      </div>
-
-      <!-- ボタン -->
-      <div class="col-12 text-center mt-3">
-        <%= form.submit "ルームを作成する", class: "btn btn-primary btn-block col-12 col-md-2" %>
-      </div>
+        <!-- ボタン -->
+        <div class="col-12 text-center mt-3">
+          <%= form.submit 'ルームを作成する', class: 'btn btn-primary btn-block col-12 col-md-3' %>
+        </div>
       <% end %>
     </div>
   </div>

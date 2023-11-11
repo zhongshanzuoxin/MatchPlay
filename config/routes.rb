@@ -28,6 +28,8 @@ devise_for :users,skip: [:passwords], controllers: {
         member do
       get 'join'
       delete 'leave'
+      get 'user_count'
+      get 'user_list'
     end
   end
 
