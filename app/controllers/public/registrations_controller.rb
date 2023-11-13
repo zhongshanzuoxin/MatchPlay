@@ -8,6 +8,11 @@ class Public::RegistrationsController < Devise::RegistrationsController
   # def new
   #   super
   # end
+  def create
+    super do |resource|
+      flash[:alert] = resource.errors.full_messages.join(', ') if resource.errors.any?
+    end
+  end
 
   # POST /resource
   # def create

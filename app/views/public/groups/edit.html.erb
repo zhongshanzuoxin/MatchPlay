@@ -1,13 +1,10 @@
 <div class="container mt-5">
-  <% if @group.errors[:max_users].any? %>
-    <div class="text-danger">
-      <%= @group.errors[:max_users].join(", ") %>
-    </div>
-  <% end %>
-
   <div class="row justify-content-center">
     <div class="col-12 col-lg-6 mb-3">
       <%= form_with(model: @group, local: true) do |form| %>
+      
+      <!-- 全体的なエラーメッセージ -->
+      <%= render 'public/shared/errors', object: @group %>
 
         <!-- 最大人数 -->
         <div class="col-12 mb-3 text-center">
@@ -23,11 +20,11 @@
         <div class="mb-3 row justify-content-center">
           <div class="col-md-6 mb-3 text-center">
             <%= form.label :tag_ids_left, 'タグを選択', class: "form-label" %>
-            <%= form.collection_select :tag_ids_left, Tag.all, :id, :tag_name, { include_blank: '指定しない', selected: @group.tag_ids[0] }, { class: "form-select" } %>
+            <%= form.collection_select :tag_ids_left, Tag.all, :id, :tag_name, { include_blank: '指定しない', selected: @group.tag_ids[0] }, { class: "form-select", name: "group[tag_ids][]" } %>
           </div>
           <div class="col-md-6 mb-3 text-center">
             <%= form.label :tag_ids_right, 'タグを選択', class: "form-label" %>
-            <%= form.collection_select :tag_ids_right, Tag.all, :id, :tag_name, { include_blank: '指定しない', selected: @group.tag_ids[1] }, { class: "form-select" } %>
+            <%= form.collection_select :tag_ids_right, Tag.all, :id, :tag_name, { include_blank: '指定しない', selected: @group.tag_ids[1] }, { class: "form-select", name: "group[tag_ids][]" } %>
           </div>
         </div>
 
@@ -35,11 +32,11 @@
         <div class="mb-3 row justify-content-center">
           <div class="col-md-6 mb-3 text-center">
             <%= form.label :tag_ids_bottom_left, 'タグを選択', class: "form-label" %>
-            <%= form.collection_select :tag_ids_bottom_left, Tag.all, :id, :tag_name, { include_blank: '指定しない', selected: @group.tag_ids[2] }, { class: "form-select" } %>
+            <%= form.collection_select :tag_ids_bottom_left, Tag.all, :id, :tag_name, { include_blank: '指定しない', selected: @group.tag_ids[2] }, { class: "form-select", name: "group[tag_ids][]" } %>
           </div>
           <div class="col-md-6 mb-3 text-center">
             <%= form.label :tag_ids_bottom_right, 'タグを選択', class: "form-label" %>
-            <%= form.collection_select :tag_ids_bottom_right, Tag.all, :id, :tag_name, { include_blank: '指定しない', selected: @group.tag_ids[3] }, { class: "form-select" } %>
+            <%= form.collection_select :tag_ids_bottom_right, Tag.all, :id, :tag_name, { include_blank: '指定しない', selected: @group.tag_ids[3] }, { class: "form-select", name: "group[tag_ids][]" } %>
           </div>
         </div>
 

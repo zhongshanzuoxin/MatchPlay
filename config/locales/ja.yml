@@ -1,0 +1,24 @@
+ja:
+  activerecord:
+    attributes:
+      group:
+        max_users: "最大人数"
+        game_title: "ゲームタイトル"
+        introduction: "募集の概要"
+      user:
+        email: "メールアドレス"
+        name: "名前"
+    errors:
+      models:
+        group:
+          attributes:
+            game_title:
+              blank: "が入力されていません"
+            introduction:
+              too_long: "は最大%{count}文字までです"
+        user:
+          attributes:
+            email:
+              taken: "は既に使用されています"
+            name:
+              invalid: "に同じ文字は連続して使えません"

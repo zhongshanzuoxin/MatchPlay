@@ -1,0 +1,45 @@
+      <%= form_with(url: groups_path, method: "get") do |form| %>
+
+        <!-- 上段のセレクトボックス -->
+        <div class="mb-3 d-flex justify-content-center">
+          <div class="col-6 text-center">
+            <div class="d-flex flex-column align-items-center">
+              <%= form.label 'tag_ids1[]', 'タグを選択', class: 'form-label' %>
+              <%= form.select 'tag_ids1[]', options_for_select(Tag.all.map { |tag| [tag.tag_name, tag.id] }, params[:tag_ids1]), include_blank: '指定しない', class: "form-select" %>
+            </div>
+          </div>
+          <div class="col-6 text-center">
+            <div class="d-flex flex-column align-items-center">
+              <%= form.label 'tag_ids2[]', 'タグを選択', class: 'form-label' %>
+              <%= form.select 'tag_ids2[]', options_for_select(Tag.all.map { |tag| [tag.tag_name, tag.id] }, params[:tag_ids2]), include_blank: '指定しない', class: "form-select" %>
+            </div>
+          </div>
+        </div>
+
+        <!-- 下段のセレクトボックス -->
+        <div class="mb-3 d-flex justify-content-center">
+          <div class="col-6 text-center">
+            <div class="d-flex flex-column align-items-center">
+              <%= form.label 'tag_ids3[]', 'タグを選択', class: 'form-label' %>
+              <%= form.select 'tag_ids3[]', options_for_select(Tag.all.map { |tag| [tag.tag_name, tag.id] }, params[:tag_ids3]), include_blank: '指定しない', class: "form-select" %>
+            </div>
+          </div>
+          <div class="col-6 text-center">
+            <div class="d-flex flex-column align-items-center">
+              <%= form.label 'tag_ids4[]', 'タグを選択', class: 'form-label' %>
+              <%= form.select 'tag_ids4[]', options_for_select(Tag.all.map { |tag| [tag.tag_name, tag.id] }, params[:tag_ids4]), include_blank: '指定しない', class: "form-select" %>
+            </div>
+          </div>
+        </div>
+
+        <!-- ゲームタイトル -->
+        <div class="col-12 mb-3 text-center">
+          <%= form.label 'game_title', 'ゲームタイトル', class: 'form-label', for: 'game_title' %>
+          <%= form.text_field :game_title, value: params[:game_title], name: 'game_title', class: "form-control", placeholder: "ゲームタイトル", id: "game_title" %>
+        </div>
+
+        <!-- ボタン -->
+        <div class="col-12 text-center mt-3">
+          <%= form.submit '検索', class: 'btn btn-primary btn-block col-12 col-md-3' %>
+        </div>
+      <% end %>

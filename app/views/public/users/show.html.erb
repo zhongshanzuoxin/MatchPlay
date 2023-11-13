@@ -1,67 +1,41 @@
-<!-- 名前の編集ボタンとフォーム -->
 <div class="container mt-5">
   <div class="row">
-    <!-- 左側の三分の一（プロフィール画像） -->
+
+    <!-- プロフィール画像 -->
     <div class="col-md-4">
-      <%= image_tag 'default-profile-image.jpg', class: 'img-fluid rounded' %>
-      <% if current_user != @user %>
-        <% if current_user.blocking?(@user) %>
-          <%= link_to "ブロック解除", unblock_path(@user.id), method: :post, class: 'btn btn-sm btn-danger' %>
-        <% else %>
-          <%= link_to "ブロックする", block_path(@user.id), method: :post, class: 'btn btn-sm btn-success' %>
-        <% end %>
-      <% end %>
-      <% if current_user == @user %>
-      <%= link_to "ブロックしているユーザー一覧", blocked_users_user_path(@user), class: 'btn btn-primary' %>
-      <% end %>
-    </div>
-
-    <!-- 右側の残り三分の二（ユーザーネームと自己紹介） -->
-    <div class="col-md-8">
-      <div class="d-flex align-items-center">
-        <h2><%= @user.name %></h2>
-
-        <!-- 名前の編集ボタンとフォーム -->
-        <% if current_user == @user %>
-          <button id="edit-name" class="btn btn-sm btn-primary me-2">編集</button>
-          <div id="name-edit-form" style="display: none;">
-            <%= form_with model: @user, url: user_path(@user), id: 'name-form', remote: true, method: :patch do |form| %>
-              <%= form.text_field :name %>
-              <%= form.submit '完了', class: 'btn btn-sm btn-success' %>
+      <div class="card position-relative">
+        <%= image_tag 'default-profile-image.jpg', class: 'card-img-top rounded' %>
+        <div class="card-body">
+          <% if current_user != @user %>
+            <% if current_user.blocking?(@user) %>
+              <%= link_to "ブロック解除", unblock_path(@user.id), method: :delete, class: 'btn btn-danger btn-block mb-2' %>
+            <% else %>
+              <%= link_to "ブロックする", block_path(@user.id), method: :post, class: 'btn btn-success btn-block mb-2' %>
             <% end %>
-          </div>
-        <% end %>
-      </div>
-
-      <div class="d-flex align-items-center">
-        <p><%= @user.introduction %></p>
-
-        <!-- 自己紹介の編集ボタンとフォーム -->
-        <% if current_user == @user %>
-          <button id="edit-introduction" class="btn btn-sm btn-primary me-2">編集</button>
-          <div id="introduction-edit-form" style="display: none;">
-            <%= form_with model: @user, url: user_path(@user), id: 'introduction-form', remote: true, method: :patch do |form| %>
-              <%= form.text_area :introduction %>
-              <%= form.submit '完了', class: 'btn btn-sm btn-success' %>
-            <% end %>
-          </div>
-        <% end %>
+          <% end %>
+          <div class="card-bottom-buttons">
+          <% if current_user == @user %>
+            <%= link_to "ブロックユーザーリスト", blocking_users_user_path(@user), class: 'btn btn-primary btn-block' %>
+          <% end %>
+        </div>
+        </div>
       </div>
     </div>
+
+    <!-- ユーザーネームと自己紹介 -->
+<div class="col-md-8">
+  <div class="d-flex align-items-center">
+    <!-- 編集ボタンを名前の左側に配置 -->
+    <% if current_user == @user %>
+    <%= button_tag("編集", class: "btn btn-primary me-3", id: "edit-profile-btn") %>
+    <h2><%= @user.name %></h2>
+    <% end %>
+  </div>
+  <p class="mt-3"><%= @user.introduction %></p>
+  <div id="edit-profile-form" style="display: none;">
+    <%= render 'public/users/edit', user: @user %>
   </div>
 </div>
 
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // 編集ボタンをクリックしてフォームを表示/非表示
-    document.querySelector('#edit-name').addEventListener('click', function() {
-      document.querySelector('#name-edit-form').style.display = 'block';
-      document.querySelector('#edit-name').style.display = 'none';
-    });
-
-    document.querySelector('#edit-introduction').addEventListener('click', function() {
-      document.querySelector('#introduction-edit-form').style.display = 'block';
-      document.querySelector('#edit-introduction').style.display = 'none';
-    });
-  });
-</script>
+  </div>
+</div>

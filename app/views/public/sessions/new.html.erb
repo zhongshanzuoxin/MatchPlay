@@ -4,17 +4,21 @@
   </h2>
 
   <div class="col-12 col-md-6 mx-auto">
-    <%= form_with(model: resource, url: session_path(resource_name)) do |f| %>
-      <%= render "public/shared/error_messages", resource: resource %>
+    <%= form_with(model: resource, url: session_path(resource_name), html: {class: "was-validated"}) do |f| %>
+      <%= render "public/shared/error_messages" %>
 
       <div class="mb-3">
-        <label for "email" class="form-label">メールアドレス</label>
-        <%= f.text_field :email, id: 'email', class: 'form-control', autofocus: true, autocomplete: "email", placeholder: 'メールアドレス' %>
+        <%= f.label :email, "メールアドレス", class: "form-label", for: "email" %>
+        <%= f.text_field :email, id: 'email', class: "form-control", autofocus: true, autocomplete: "email", placeholder: 'メールアドレス', required: true %>
+        <div class="email-invalid-feedback mt-2" style="display: none;">
+        </div>
       </div>
+
       <div class="mb-3">
-        <label for="password" class="form-label">パスワード（6文字以上）</label>
-        <%= f.password_field :password, id: "password", class: "form-control", placeholder: "パスワード" %>
+        <%= f.label :password, "パスワード（6文字以上）", class: "form-label", for: "password" %>
+        <%= f.password_field :password, id: "password", class: "form-control", placeholder: "パスワード", required: true, minlength: 6 %>
       </div>
+
       <div class="mb-3 text-center">
         <%= f.submit "ログイン", class: "btn btn-success btn-block col-12 mt-3" %>
       </div>

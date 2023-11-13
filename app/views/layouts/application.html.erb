@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
+    
     <!-- Bootstrap CSS CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.css">
 
     <!-- Bootstrap JavaScript Bundle CDN (includes Popper.js) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -16,7 +18,7 @@
 
   </head>
 
-  <body>
+  <body data-flash-notice="<%= flash[:notice] %>" data-flash-alert="<%= flash[:alert] %>">
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
     <a class="navbar-brand" href="/">Navbar</a>
@@ -51,10 +53,10 @@
     <%= link_to 'グループ詳細', group_path(owned_group), class: 'btn btn-dark' %>
   <% elsif current_user.groups.any? %>
     <% joined_group = current_user.groups.first %>
-    <%= link_to '募集一覧', groups_path, class: 'btn btn-dark' %>
+    <%= link_to '募集を探す', groups_path, class: 'btn btn-dark' %>
     <%= link_to '参加中のグループ', group_path(joined_group), class: 'btn btn-dark' %>
   <% else %>
-    <%= link_to '募集一覧', groups_path, class: 'btn btn-dark' %>
+    <%= link_to '募集を探す', groups_path, class: 'btn btn-dark' %>
     <%= link_to '募集する', new_group_path, class: 'btn btn-dark' %>
   <% end %>
 </li>

@@ -2,12 +2,17 @@
   <div class="row justify-content-center">
     <div class="col-12 col-lg-6 mb-3">
       <%= form_with(model: @group, local: true) do |form| %>
-        <div class="col-12 mb-3 text-center">
-          <%= form.label :max_users, '最大人数', class: 'form-label', style: 'white-space: nowrap;' %>
-        </div>
-        <div class="col-12 text-center">
-          <div class="col-2 mx-auto">
-            <%= form.number_field :max_users, in: 1..20, class: 'form-control', value: 1 %>
+      
+        <!-- 全体的なエラーメッセージ -->
+        <%= render 'public/shared/errors', object: @group %>
+
+        <!-- 最大人数 -->
+        <div class="row mb-3">
+          <div class="col-12 d-flex justify-content-center">
+            <div class="col-2">
+              <%= form.label :max_users, '最大人数', class: 'form-label' %>
+              <%= form.number_field :max_users, in: 1..20, class: 'form-control', value: (@group.max_users || 1) %>
+            </div>
           </div>
         </div>
 
@@ -45,6 +50,9 @@
         <div class="col-12 mb-3 text-center">
           <%= form.label :introduction, '募集の概要', class: 'form-label', for: 'exampleFormControlTextarea1' %>
           <%= form.text_area :introduction, class: 'form-control', rows: 6, id: 'exampleFormControlTextarea1' %>
+          <% if @group.errors[:introduction].any? %>
+            <div class="text-danger"><%= @group.errors[:introduction].join(", ") %></div>
+          <% end %>
         </div>
 
         <!-- ボタン -->

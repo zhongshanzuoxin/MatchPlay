@@ -3,13 +3,12 @@
     <div class="col-md-6 offset-md-3">
       <h1 class="display-6 text-center mb-4">ブロックしているユーザー</h1>
       <ul class="list-group">
-        <% @blocked_users.each do |blocked_user| %>
+        <% @blocking_users.each do |blocking_user| %>
           <li class="list-group-item">
-            <%= link_to blocked_user.name, user_path(blocked_user) %>
+            <%= link_to blocking_user.name, user_path(blocking_user) %>
           </li>
         <% end %>
       </ul>
     </div>
   </div>
 </div>
-
