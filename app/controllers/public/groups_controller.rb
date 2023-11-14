@@ -60,6 +60,9 @@ class Public::GroupsController < ApplicationController
     else
       redirect_to group_path(@group), alert: "既にグループに参加しています。"
     end
+      if @group.users.include?(current_user)
+    Notification.create(user_id: @group.owner_id, content: "#{current_user.name}さんがあなたのグループに参加しました。")
+      end
   end
 
   # グループから退出するアクション

@@ -10,6 +10,9 @@ class User < ApplicationRecord
   # ユーザーが所有するグループの関連付け
   has_many :owned_groups, class_name: 'Group', foreign_key: :owner_id
   has_many :messages
+  
+  # 通知モデルへの関連付けを追加
+  has_many :notifications, dependent: :destroy
 
   has_one_attached :profile_image
 

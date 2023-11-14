@@ -8,6 +8,8 @@ ja:
       user:
         email: "メールアドレス"
         name: "名前"
+      message:
+        content: "内容"
     errors:
       models:
         group:
@@ -22,3 +24,8 @@ ja:
               taken: "は既に使用されています"
             name:
               invalid: "に同じ文字は連続して使えません"
+        message:
+          attributes:
+            content:
+              blank: "メッセージを入力してください"
+              too_long: "メッセージは最大%{count}文字までです"

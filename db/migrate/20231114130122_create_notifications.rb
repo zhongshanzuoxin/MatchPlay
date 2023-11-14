@@ -1,10 +1,9 @@
 class CreateNotifications < ActiveRecord::Migration[6.1]
   def change
     create_table :notifications do |t|
-      t.integer :visiter_id
-      t.integer :visited_id
-      t.integer :user_id
-      t.integer :action
+      t.references :user, null: false, foreign_key: true
+      t.string :content
+      t.boolean :read, null: false, default: "true"
 
       t.timestamps
     end

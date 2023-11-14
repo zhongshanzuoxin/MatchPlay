@@ -4,11 +4,13 @@
       <h1 class="display-6 text-center mb-4">ブロックしているユーザー</h1>
       <ul class="list-group">
         <% @blocking_users.each do |blocking_user| %>
-          <li class="list-group-item">
+          <li class="list-group-item d-flex justify-content-between align-items-center" id="user_<%= blocking_user.id %>">
             <%= link_to blocking_user.name, user_path(blocking_user) %>
+            <%= link_to 'ブロック解除', unblock_path(blocking_user.id), method: :delete, class: 'btn btn-danger block-link', data: { remote: true, user_id: blocking_user.id } %>
           </li>
         <% end %>
       </ul>
     </div>
   </div>
 </div>
+

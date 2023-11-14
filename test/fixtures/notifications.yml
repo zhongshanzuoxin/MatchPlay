@@ -1,13 +1,13 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  visiter_id: 1
-  visited_id: 1
-  user_id: 1
-  action: 1
+  user: one
+  content: MyString
+  read: false
+  default: 
 
 two:
-  visiter_id: 1
-  visited_id: 1
-  user_id: 1
-  action: 1
+  user: two
+  content: MyString
+  read: false
+  default: 

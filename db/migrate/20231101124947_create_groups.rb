@@ -2,13 +2,14 @@ class CreateGroups < ActiveRecord::Migration[6.1]
   def change
     create_table :groups do |t|
       t.text :introduction
-      t.references :user, foreign_key: true
-      t.text :game_title
+      t.text :game_title, null: false
       t.string :tag
-      t.integer :owner_id
-      t.integer :max_users
+      t.integer :owner_id, null: false
+      t.integer :max_users, null: false
 
       t.timestamps
     end
+
+    add_foreign_key :groups, :users, column: :owner_id
   end
 end

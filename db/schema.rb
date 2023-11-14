@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_11_09_112528) do
+ActiveRecord::Schema.define(version: 2023_11_14_130122) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -73,18 +73,16 @@ ActiveRecord::Schema.define(version: 2023_11_09_112528) do
 
   create_table "groups", force: :cascade do |t|
     t.text "introduction"
-    t.integer "user_id"
-    t.text "game_title"
+    t.text "game_title", null: false
     t.string "tag"
-    t.integer "owner_id"
-    t.integer "max_users"
+    t.integer "owner_id", null: false
+    t.integer "max_users", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["user_id"], name: "index_groups_on_user_id"
   end
 
   create_table "messages", force: :cascade do |t|
-    t.text "content"
+    t.text "content", null: false
     t.integer "user_id", null: false
     t.integer "group_id", null: false
     t.datetime "created_at", precision: 6, null: false
@@ -94,19 +92,22 @@ ActiveRecord::Schema.define(version: 2023_11_09_112528) do
   end
 
   create_table "notifications", force: :cascade do |t|
-    t.integer "visiter_id"
-    t.integer "visited_id"
-    t.integer "user_id"
-    t.integer "action"
+    t.integer "user_id", null: false
+    t.string "content"
+    t.boolean "read", default: true, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
   create_table "relationships", force: :cascade do |t|
-    t.integer "blocked_id"
-    t.integer "blocking_id"
+    t.integer "blocked_id", null: false
+    t.integer "blocking_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["blocked_id", "blocking_id"], name: "index_relationships_on_blocked_id_and_blocking_id", unique: true
+    t.index ["blocked_id"], name: "index_relationships_on_blocked_id"
+    t.index ["blocking_id"], name: "index_relationships_on_blocking_id"
   end
 
   create_table "tags", force: :cascade do |t|
@@ -136,7 +137,10 @@ ActiveRecord::Schema.define(version: 2023_11_09_112528) do
   add_foreign_key "group_tags", "tags"
   add_foreign_key "group_users", "groups"
   add_foreign_key "group_users", "users"
-  add_foreign_key "groups", "users"
+  add_foreign_key "groups", "users", column: "owner_id"
   add_foreign_key "messages", "groups"
   add_foreign_key "messages", "users"
+  add_foreign_key "notifications", "users"
+  add_foreign_key "relationships", "users", column: "blocked_id"
+  add_foreign_key "relationships", "users", column: "blocking_id"
 end

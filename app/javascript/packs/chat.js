@@ -1,49 +1,64 @@
-// turbolinks:loadイベントリスナーを追加
+// メッセージ更新用のインターバルIDを保持する変数
+var messageUpdateInterval;
+
 document.addEventListener('turbolinks:load', function () {
-  // "group-data" IDを持つ要素を取得
   var groupElement = document.getElementById("group-data");
-  
-  // groupElementが存在する場合のみ処理を実行
+
   if (groupElement) {
-    // groupElementからdata-group-id属性を取得してグループIDを取得
     var group_id = groupElement.getAttribute("data-group-id");
+    var messagesContainer = document.getElementById("messages");
 
-    // メッセージを更新する関数
     var updateMessages = function () {
-      // "messages" IDを持つ要素を取得
-      var messagesContainer = document.getElementById("messages");
-
-      // messagesContainerが存在する場合のみ処理を実行
       if (messagesContainer) {
-        // fetch APIを使用してサーバーからメッセージを取得
         fetch('/groups/' + group_id + '/messages')
           .then(response => {
-            // レスポンスがOKでない場合はエラーを投げる
-            if (!response.ok) {
-              throw new Error('ネットワークエラー');
-            }
+            if (!response.ok) throw new Error('ネットワークエラー');
             return response.text();
           })
           .then(text => {
-            // レスポンステキストをmessagesContainerに設定
             messagesContainer.innerHTML = text;
           })
           .catch(error => {
-            // エラーが発生した場合はコンソールにエラーを表示
             console.error('メッセージの取得に失敗しました:', error);
           });
       }
     };
 
-    // 初回のメッセージ更新を実行
+    // 初回のメッセージ更新を実行し、5秒ごとの更新をスケジュール
     updateMessages();
-    // 5秒ごとにメッセージを更新
-    setInterval(updateMessages, 5000);
+    messageUpdateInterval = setInterval(updateMessages, 5000);
+  }
 
-    // フォームのajax:successイベントに対するイベントリスナーを追加
-    document.querySelector('form').addEventListener('ajax:success', function (event) {
-      // 送信成功後に入力フィールドをクリア
+  // チャットフォームの送信成功後に入力フィールドをクリア
+  var form = document.querySelector('form[data-remote="true"]');
+  if (form) {
+    form.addEventListener('ajax:success', function () {
       document.getElementById("myInput").value = '';
     });
+  }
+});
+
+// ページ遷移時にメッセージ更新のインターバルをクリア
+document.addEventListener('turbolinks:before-cache', function () {
+  if (messageUpdateInterval) {
+    clearInterval(messageUpdateInterval);
+  }
+});
+
+// フォームの送信に失敗した際のエラーハンドリング
+document.addEventListener('ajax:error', function(event) {
+  var detail = event.detail;
+  var xhr = detail[2]; // XMLHttpRequestオブジェクトを取得
+  var response;
+
+  try {
+    response = JSON.parse(xhr.responseText);
+  } catch (e) {
+    console.error('レスポンスの解析中にエラーが発生しました:', e);
+    return;
+  }
+
+  if (response && response.errors) {
+    console.error('エラーが発生しました:', response.errors);
   }
 });
