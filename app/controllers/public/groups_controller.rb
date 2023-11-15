@@ -45,25 +45,26 @@ class Public::GroupsController < ApplicationController
     @groups = @groups.reject { |group| blocked_user_ids.include?(group.owner_id) || blocking_user_ids.include?(group.owner_id) }
   end
 
-  # グループに参加するアクション
-  def join
-    @group = Group.find(params[:id])
+# グループに参加するアクション
+def join
+  @group = Group.find(params[:id])
 
-    # グループの現在のメンバー数（オーナーを含む）が最大人数に達しているかをチェック
-    if @group.users.count + 1 >= @group.max_users
-      # グループが満員の場合、リダイレクトしてアラートを表示
-      redirect_to groups_path, alert: "このグループは既に満員です。"
-    elsif !@group.users.include?(current_user)
-      # ユーザーがまだグループに参加していない場合、ユーザーをグループに追加してリダイレクト
-      @group.users << current_user
-      redirect_to group_path(@group), notice: "グループに参加しました。"
-    else
-      redirect_to group_path(@group), alert: "既にグループに参加しています。"
-    end
-      if @group.users.include?(current_user)
-    Notification.create(user_id: @group.owner_id, content: "#{current_user.name}さんがあなたのグループに参加しました。")
-      end
+  # グループの現在のメンバー数（オーナーを含む）が最大人数に達しているかをチェック
+  if @group.users.count + 1 >= @group.max_users
+    # グループが満員の場合、リダイレクトしてアラートを表示
+    redirect_to groups_path, alert: "このグループは既に満員です。"
+  elsif !@group.users.include?(current_user)
+    # ユーザーがまだグループに参加していない場合、ユーザーをグループに追加してリダイレクト
+    @group.users << current_user
+    redirect_to group_path(@group), notice: "グループに参加しました。"
+
+    # 参加したユーザーに通知を送信
+    notification_message = "#{current_user.name}さんがあなたのグループに参加しました。"
+    Notification.create(user: @group.owner, content: notification_message)
+  else
+    redirect_to group_path(@group), alert: "既にグループに参加しています。"
   end
+end
 
   # グループから退出するアクション
   def leave
@@ -85,7 +86,7 @@ class Public::GroupsController < ApplicationController
     # ユーザー数を計算（オーナーも含めるため +1）
     user_count = group.users.count + 1 
 
-    render json: { user_count: user_count }
+    render json: { user_count: user_count, max_users: group.max_users }
   end
 
   # グループのユーザーリストを取得してJSONで返すアクション

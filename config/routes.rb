@@ -20,6 +20,7 @@ devise_for :users,skip: [:passwords], controllers: {
   scope module: :public do
     root "homes#top"
     get 'users', to: 'users#dummy'
+    post 'notifications/mark_as_read', to: 'notifications#mark_as_read'
     resources :groups, only: [:index, :show, :new, :edit, :create, :update, :destroy] do
       get 'search', to: 'groups#search'
       resources :messages

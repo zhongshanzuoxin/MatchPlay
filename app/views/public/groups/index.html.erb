@@ -13,28 +13,28 @@
               <div class="card-header">
                 <!-- グループのゲームタイトルと参加ユーザーカウントを表示 -->
                 <%= group.game_title %>
-                <span id="user-count" class="float-end" data-group-id="<%= group.id %>">参加ユーザー <%= group.users.count + 1 %>/<%= group.max_users %></span>
+                <span class="user-count float-end" data-group-id="<%= group.id %>" data-display-type="detailed">参加ユーザー ( <%= group.users.count + 1 %> / <%= group.max_users %> )</span>
               </div>
 
               <div class="card-body">
-                <p class="card-title"><%= group.owner.name %></p>
-        <p>
-          <% group.tags.each do |tag| %>
-            <span class="badge bg-primary me-2"><%= tag.tag_name %></span>
-          <% end %>
-        </p>
+                <p class="card-title"><%= link_to group.owner.name, user_path(group.owner) %></p>
+                <p>
+                  <% group.tags.each do |tag| %>
+                    <span class="badge bg-primary me-2"><%= tag.tag_name %></span>
+                  <% end %>
+                </p>
                 <p class="card-text"><%= group.introduction %></p>
                 <% if current_user %>
                   <% if group.users.include?(current_user) %>
                     <!-- 参加している場合の表示 -->
-                    <p><%= link_to "参加中のグループを見る", group_path(group), class: "btn btn-primary" %></p>
+                      <%= link_to "参加中のグループを見る", group_path(group), class: "btn btn-primary btn-sm" %>
                   <% else %>
                     <% if current_user.groups.any? && !group.users.include?(current_user) %>
                       <!-- 他のグループに参加中の場合の表示 -->
                       <p>他のグループに参加しています。</p>
                     <% else %>
                       <!-- 参加していない場合のボタン表示 -->
-                      <%= link_to "このグループに参加する", join_group_path(group), class: "btn btn-primary" %>
+                      <%= link_to "このグループに参加する", join_group_path(group), class: "btn btn-primary btn-sm" %>
                     <% end %>
                   <% end %>
                 <% end %>

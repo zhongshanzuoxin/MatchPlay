@@ -51,16 +51,16 @@
     <div class="col-md-12 col-lg-4 mt-3">
       <div class="card">
         <div class="card-header">
-          <span id="user-count" class="float-start" data-group-id="<%= @group.id %>">参加ユーザー(<%= (@group.users.count + 1) %>)</span>
+          <span class="user-count float-start" data-group-id="<%= @group.id %>" data-display-type="simple">参加ユーザー(<%= (@group.users.count + 1) %>)</span>
           <span class="float-end">
             グループホスト: <%= link_to @group.owner.name, user_path(@group.owner) %>
           </span>
         </div>
-<ul class="list-group list-group-flush" id="user-list" data-group-id="<%= @group.id %>">
-  <% @group.users.each do |user| %>
-    <li class="list-group-item"><%= link_to user.name, user_path(user) %></li>
-  <% end %>
-</ul>
+        <ul class="list-group list-group-flush" id="user-list" data-group-id="<%= @group.id %>">
+          <% @group.users.each do |user| %>
+            <li class="list-group-item"><%= link_to user.name, user_path(user) %></li>
+          <% end %>
+        </ul>
       </div>
     </div>
   </div>

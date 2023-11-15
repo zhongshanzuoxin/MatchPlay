@@ -29,3 +29,22 @@ ja:
             content:
               blank: "メッセージを入力してください"
               too_long: "メッセージは最大%{count}文字までです"
+
+      # 通知メッセージの動的な生成
+      group_owner_join_notification: "%{user_name} さんがあなたのグループに参加しました."
+
+  datetime:
+    distance_in_words:
+      less_than_x_minutes:
+        one: "1分未満"
+        other: "%{count}分未満"
+
+      # 追加：x_minutes前の翻訳
+      x_minutes:
+        one: "1分前"
+        other: "%{count}分"
+
+      # 追加：about_x_hoursの翻訳
+      about_x_hours:
+        one: "約1時間"
+        other: "約%{count}時間"
