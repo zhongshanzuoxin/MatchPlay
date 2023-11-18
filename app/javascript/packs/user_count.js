@@ -1,7 +1,5 @@
-// ユーザーカウント更新用のインターバルIDを保持する変数
 var userCountInterval;
 
-// turbolinks:loadイベントリスナーを追加
 document.addEventListener('turbolinks:load', function() {
   function updateUserCount() {
     var userCountElements = document.getElementsByClassName("user-count");
@@ -12,12 +10,16 @@ document.addEventListener('turbolinks:load', function() {
       var xhr = new XMLHttpRequest();
       xhr.open("GET", `/groups/${groupId}/user_count.json`, true);
       xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-          var data = JSON.parse(xhr.responseText);
-          if (displayType === 'simple') {
-            userCountElement.textContent = `参加ユーザー(${data.user_count})`;
-          } else if (displayType === 'detailed') {
-            userCountElement.textContent = `参加ユーザー ( ${data.user_count} / ${data.max_users} )`;
+        if (xhr.readyState === 4) {
+          if (xhr.status === 404) {
+            window.location.href = '/';
+          } else if (xhr.status === 200) {
+            var data = JSON.parse(xhr.responseText);
+            if (displayType === 'simple') {
+              userCountElement.textContent = `参加ユーザー(${data.user_count})`;
+            } else if (displayType === 'detailed') {
+              userCountElement.textContent = `参加ユーザー ( ${data.user_count} / ${data.max_users} )`;
+            }
           }
         }
       };
@@ -37,4 +39,3 @@ document.addEventListener('turbolinks:before-cache', function() {
     clearInterval(userCountInterval);
   }
 });
-

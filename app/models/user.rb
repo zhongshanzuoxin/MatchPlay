@@ -26,6 +26,11 @@ class User < ApplicationRecord
   # 関連付けを通してブロックしているユーザーとブロックされているユーザーを取得
   has_many :blocking_user, through: :blocking, source: :blocked
   has_many :blocked_user, through: :blocked, source: :blocking
+  
+
+  # ユーザーの is_active 属性が false に変更されたときに呼び出されるコールバック
+  after_update :destroy_related_groups, if: -> { saved_change_to_is_active? && !is_active }
+
 
   # ユーザー名と自己紹介のバリデーション
   validates :name, presence: true, length: { maximum: 15 }, format: { without: /(\w)\1{4,}/ }
@@ -51,5 +56,13 @@ class User < ApplicationRecord
   def blocked_users_groups
     blocked_user.map(&:owned_groups).flatten
   end
+  
+  private
+  
+  # is_activeがfalseになった場合グループを自動削除
+  def destroy_related_groups
+    owned_groups.destroy_all
+  end
+
 
 end

@@ -39,12 +39,14 @@ ja:
         one: "1分未満"
         other: "%{count}分未満"
 
-      # 追加：x_minutes前の翻訳
       x_minutes:
         one: "1分前"
         other: "%{count}分"
 
-      # 追加：about_x_hoursの翻訳
       about_x_hours:
         one: "約1時間"
         other: "約%{count}時間"
+
+      x_days:
+        one: "1日"
+        other: "%{count}日"

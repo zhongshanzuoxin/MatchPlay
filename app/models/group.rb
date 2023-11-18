@@ -4,11 +4,16 @@ class Group < ApplicationRecord
   has_many :users, through: :group_users
   has_many :group_tags, dependent: :destroy
   has_many :tags, through: :group_tags
-  has_many :messages, dependent: :destroy 
-  
+  has_many :messages
+
+  # グループが削除される前に呼び出されるコールバック
+  before_destroy :nullify_messages_group_id
+  before_destroy :notify_users_about_deletion, prepend: true
+
+
   # ゲームタイトルが空かどうか確認
   validates :game_title, presence: true
-  
+
   # 概要欄の最大文字数確認
   validates :introduction, length: { maximum: 300 }
 
@@ -20,6 +25,28 @@ class Group < ApplicationRecord
 
   # 最大人数が現在の参加人数以下にならないようにするカスタムバリデーション
   validate :max_users_cannot_be_less_than_current_users
+
+  # ユーザーがグループに参加する際に最大人数を超えないかチェックするカスタムバリデーション
+  validate :user_can_join_group, on: :join
+
+
+  private
+
+  # グループ削除時にユーザーに通知を送信するメソッド
+  def notify_users_about_deletion
+    users_to_notify = users.to_a
+    owner_name = owner.name
+
+    users_to_notify.each do |user|
+      notification_message = "#{owner_name}さんが作成したグループは削除されました。"
+      Notification.create(user: user, content: notification_message)
+    end
+  end
+
+  # メッセージのgroup_idをnullに設定するメソッド
+  def nullify_messages_group_id
+    messages.update_all(group_id: nil)
+  end
 
   # ユーザーが1つのグループしか作成できないことを確認するバリデーション
   def check_user_can_create_only_one_group
@@ -40,5 +67,12 @@ class Group < ApplicationRecord
   # グループの総参加人数を計算（オーナーも含める）
   def total_users_count
     users.count + 1 # グループオーナーも参加人数に含むために1を加算
+  end
+
+  # 設定された最大人数を超えないか確認するバリデーション
+  def user_can_join_group
+    if total_users_count > max_users
+      errors.add(:base, 'このグループは既に満員です。')
+    end
   end
 end

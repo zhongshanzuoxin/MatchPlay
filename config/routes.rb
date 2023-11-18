@@ -13,7 +13,9 @@ devise_for :users,skip: [:passwords], controllers: {
   #管理者側
   namespace :admin do
     get "/", to: "homes#top"
-    resources :users, only: [:index, :show, :edit, :update]
+    resources :users, only: [:index, :show, :edit, :update] do
+      get 'search_messages', on: :member 
+    end
   end
 
   #ユーザー側

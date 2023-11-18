@@ -1,5 +1,5 @@
 class Public::GroupsController < ApplicationController
-  before_action :set_group, only: [:edit, :update, :show, :destroy, :ensure_correct_user]
+  before_action :set_group, only: [:edit, :update, :show, :destroy, :ensure_correct_user, :join, :leave]
   before_action :ensure_correct_user, only: [:edit, :update, :destroy]
   before_action :check_user_can_create_only_one_group, only: [:new, :create]
 
@@ -45,38 +45,33 @@ class Public::GroupsController < ApplicationController
     @groups = @groups.reject { |group| blocked_user_ids.include?(group.owner_id) || blocking_user_ids.include?(group.owner_id) }
   end
 
-# グループに参加するアクション
-def join
-  @group = Group.find(params[:id])
-
-  # グループの現在のメンバー数（オーナーを含む）が最大人数に達しているかをチェック
-  if @group.users.count + 1 >= @group.max_users
-    # グループが満員の場合、リダイレクトしてアラートを表示
-    redirect_to groups_path, alert: "このグループは既に満員です。"
-  elsif !@group.users.include?(current_user)
-    # ユーザーがまだグループに参加していない場合、ユーザーをグループに追加してリダイレクト
+  # グループに参加するアクション
+  def join
+    # ユーザーを一時的にグループに追加してバリデーションを実行
     @group.users << current_user
-    redirect_to group_path(@group), notice: "グループに参加しました。"
+    if @group.valid?(:join)
+      # バリデーションが成功した場合
+      redirect_to group_path(@group), notice: "グループに参加しました。"
 
-    # 参加したユーザーに通知を送信
-    notification_message = "#{current_user.name}さんがあなたのグループに参加しました。"
-    Notification.create(user: @group.owner, content: notification_message)
-  else
-    redirect_to group_path(@group), alert: "既にグループに参加しています。"
+      # 通知を送信
+      notification_message = "#{current_user.name}さんがあなたのグループに参加しました。"
+      Notification.create(user: @group.owner, content: notification_message)
+    else
+      # バリデーションが失敗した場合
+      @group.users.delete(current_user)
+      redirect_to groups_path, alert: "このグループは既に満員です。"
+    end
   end
-end
 
   # グループから退出するアクション
   def leave
-    @group = Group.find(params[:id])
-
-    if @group.users.include?(current_user)
-      # ユーザーがグループに参加している場合、グループから削除してリダイレクト
+    if GroupUser.exists?(group_id: @group.id, user_id: current_user.id)
+      # ユーザーがグループに参加している場合の処理
       @group.users.delete(current_user)
-      redirect_to groups_path, notice: "グループから退出しました."
+      redirect_to groups_path, notice: "グループから退出しました。"
     else
-      # ユーザーがグループに参加していない場合、リダイレクトしてアラートを表示
-      redirect_to groups_path, alert: "グループから退出できませんでした."
+      # ユーザーがグループに参加していない場合の処理
+      redirect_to groups_path, alert: "グループから退出できませんでした。"
     end
   end
 
@@ -84,8 +79,7 @@ end
   def user_count
     group = Group.find(params[:id])
     # ユーザー数を計算（オーナーも含めるため +1）
-    user_count = group.users.count + 1 
-
+    user_count = group.users.count + 1
     render json: { user_count: user_count, max_users: group.max_users }
   end
 
@@ -93,14 +87,12 @@ end
   def user_list
     group = Group.find(params[:id])
     users = group.users
-
     # ユーザーリストをJSON形式で返す
     render json: { user_list: users.map { |user| { id: user.id, name: user.name } } }
   end
 
   # グループの詳細を表示するアクション
   def show
-    @group = Group.find(params[:id])
     @tags = @group.tags
 
     # ユーザーがグループに参加していないか、オーナーでない場合、リダイレクト
@@ -149,25 +141,24 @@ end
 
   # グループ編集画面
   def edit
-    @group = Group.find(params[:id])
   end
 
   private
 
+  # ユーザーをセット
   def set_group
     @group = Group.find_by(id: params[:id])
     if @group.nil?
       redirect_to root_path, alert: "指定されたグループは存在しません。"
+      return
     end
   end
-  
-  
+
   # グループの編集権限
   def ensure_correct_user
     redirect_to root_path, alert: "この操作を行う権限がありません。" unless @group.owner_id == current_user.id
   end
-  
-  
+
   # ユーザーがグループを所持しているか判定
   def check_user_can_create_only_one_group
     if current_user.owned_groups.any?
@@ -175,7 +166,6 @@ end
     end
   end
 
-  
   def group_params
     params.require(:group).permit(:introduction, :game_title, :max_users, tag_ids: [])
   end

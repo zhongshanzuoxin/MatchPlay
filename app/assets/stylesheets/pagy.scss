@@ -1,0 +1,73 @@
+/* ページネーション全体のスタイル */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+/* ページネーションリンクのスタイル */
+.page-link {
+  padding: 8px 16px;
+  text-decoration: none;
+  color: #333;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin: 0 4px;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.page-link:hover {
+  background-color: #00ff00;
+  border-color: #00ff00;
+  color: #fff;
+}
+
+/* アクティブなページリンクのスタイル */
+.page-item.active .page-link {
+  background-color: #00ff00;
+  border-color: #00ff00;
+  color: #fff;
+}
+
+/* 前へ・次へリンクのスタイル */
+.page-item:first-child .page-link,
+.page-item:last-child .page-link {
+  margin: 0;
+}
+
+/* ページ数のスタイル */
+.page-item .page-link {
+  font-weight: bold;
+}
+
+/* 省略記号（...）のスタイル */
+.page-item.disabled .page-link {
+  pointer-events: none;
+  cursor: default;
+  background-color: transparent;
+  border: none;
+}
+
+/* 前へと次へのテキストのスタイル */
+.page-item.prev .page-link:before {
+  content: "前へ";
+  margin-right: 5px;
+}
+
+.page-item.next .page-link:after {
+  content: "次へ";
+  margin-left: 5px;
+}
+
+
+/* ページネーションのマージン */
+@media (max-width: 576px) {
+  .pagination {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+}

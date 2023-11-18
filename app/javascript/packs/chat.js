@@ -12,7 +12,12 @@ document.addEventListener('turbolinks:load', function () {
       if (messagesContainer) {
         fetch('/groups/' + group_id + '/messages')
           .then(response => {
-            if (!response.ok) throw new Error('ネットワークエラー');
+            if (!response.ok) {
+              if (response.ok) {
+                window.location.href = '/';
+              }
+              throw new Error('ネットワークエラー');
+            }
             return response.text();
           })
           .then(text => {
