@@ -1,17 +1,21 @@
 <nav class="navbar navbar-expand-lg bg-black">
   <div class="container-fluid">
     <div class="d-flex align-items-center">
-      <!-- ハンバーガーメニュー -->
+
+      <!-- ナビゲーションバーのトグルボタン -->
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon navbar-toggler-icon-custom"></span>
       </button>
-      <!-- ロゴ -->
+
+      <!-- ロゴの表示 -->
       <a class="navbar-brand" href="/">
         <%= image_tag "MatchPlay.jpg", width: '100px', class: "img-fluid" %>
       </a>
     </div>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+
+        <!-- 管理者がサインインしている場合のメニュー -->
         <% if admin_signed_in? %>
           <li class="nav-item">
             <%= link_to 'ユーザー一覧', admin_users_path, class: 'btn btn-dark' %>
@@ -23,8 +27,10 @@
             <%= link_to 'ユーザー画像一覧', admin_users_path, class: 'btn btn-dark' %>
           </li>
           <li class="nav-item">
-            <%= link_to 'ユーザー画像登録', admin_users_path, class: 'btn btn-dark' %>
+            <%= link_to 'ユーザー画像登録', new_admin_icon_path, class: 'btn btn-dark' %>
           </li>
+
+        <!-- ユーザーがサインインしている場合のメニュー -->
         <% elsif user_signed_in? %>
           <li class="nav-item">
             <%= link_to 'マイページ', user_path(current_user.id), class: 'btn btn-dark me-2' %>
@@ -46,6 +52,8 @@
           <li class="nav-item">
             <%= link_to 'ログアウト', destroy_user_session_path, method: :get, class: 'btn btn-dark me-2' %>
           </li>
+
+        <!-- サインインしていない場合のメニュー -->
         <% else %>
           <li class="nav-item">
             <%= link_to '新規登録', new_user_registration_path, class: 'btn btn-dark me-2' %>
@@ -56,42 +64,8 @@
         <% end %>
       </ul>
     </div>
-    <% if user_signed_in? %>
-      <div class="dropdown ms-auto me-2">
-        <button class="btn btn-link dropdown-toggle d-lg-flex " type="button" id="notification-icon" data-bs-toggle="dropdown" aria-expanded="false">
-          <i class="fa-solid fa-bell" style="color: #ffffff;"></i>
-          <% unread_notifications_count = current_user.notifications.where(read: false).count %>
-          <% if unread_notifications_count.positive? %>
-            <span class="badge bg-danger" id="unread-count"><%= unread_notifications_count %></span>
-          <% end %>
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notification-icon">
-          <% if current_user.notifications.empty? %>
-            <li>
-              <a class="dropdown-item" href="#">
-                <div class="text-muted">
-                  通知はありません
-                </div>
-              </a>
-            </li>
-          <% else %>
-            <% notifications = current_user.notifications.last(5).reverse %>
-            <% notifications.each_with_index do |notification, index| %>
-              <li>
-                <a class="dropdown-item" href="#">
-                  <div class="text-muted small">
-                    <%= time_ago_in_words(notification.created_at) %>前
-                  </div>
-                  <%= notification.content %>
-                </a>
-              </li>
-              <% unless index == notifications.length - 1 %>
-                <hr class="dropdown-divider">
-              <% end %>
-            <% end %>
-          <% end %>
-        </ul>
-      </div>
-    <% end %>
+
+    <!-- 通知エリアをレンダリング -->
+    <%= render "layouts/notification" %>
   </div>
 </nav>

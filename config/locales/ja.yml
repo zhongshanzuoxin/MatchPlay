@@ -8,6 +8,7 @@ ja:
       user:
         email: "メールアドレス"
         name: "名前"
+        introduction: "自己紹介"
       message:
         content: "内容"
     errors:
@@ -24,29 +25,10 @@ ja:
               taken: "は既に使用されています"
             name:
               invalid: "に同じ文字は連続して使えません"
+            introduction:
+              too_long: "は300文字以内で入力してください"
         message:
           attributes:
             content:
               blank: "メッセージを入力してください"
               too_long: "メッセージは最大%{count}文字までです"
-
-      # 通知メッセージの動的な生成
-      group_owner_join_notification: "%{user_name} さんがあなたのグループに参加しました."
-
-  datetime:
-    distance_in_words:
-      less_than_x_minutes:
-        one: "1分未満"
-        other: "%{count}分未満"
-
-      x_minutes:
-        one: "1分前"
-        other: "%{count}分"
-
-      about_x_hours:
-        one: "約1時間"
-        other: "約%{count}時間"
-
-      x_days:
-        one: "1日"
-        other: "%{count}日"

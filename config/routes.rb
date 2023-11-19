@@ -13,6 +13,7 @@ devise_for :users,skip: [:passwords], controllers: {
   #管理者側
   namespace :admin do
     get "/", to: "homes#top"
+    resources :icons, only: [:new, :create]
     resources :users, only: [:index, :show, :edit, :update] do
       get 'search_messages', on: :member 
     end

@@ -1,42 +1,46 @@
-var userListInterval;
+var userListInterval; // ユーザーリストを定期的に更新するためのインターバルのIDを保持する変数
 
 document.addEventListener('turbolinks:load', function() {
-  var userListElement = document.getElementById("user-list");
+  var userListElement = document.getElementById("user-list"); // ユーザーリスト要素を取得
 
   if (!userListElement) {
-    return;
+    return; // ユーザーリスト要素が存在しない場合は何もしない
   }
 
-  var groupId = userListElement.getAttribute("data-group-id");
+  var groupId = userListElement.getAttribute("data-group-id"); // ユーザーリスト要素からグループIDを取得
 
   function updateUserList() {
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", `/groups/${groupId}/user_list.json`, true);
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4) {
-        if (xhr.status === 404) {
-          window.location.href = '/';
-        } else if (xhr.status === 200) {
-          var data = JSON.parse(xhr.responseText);
-          var userListHTML = data.user_list.map(function(user) {
-            return "<li class='list-group-item'><a href='" + user.path + "'>" + user.name + "</a></li>";
-          }).join('');
-          userListElement.innerHTML = userListHTML;
+    fetch(`/groups/${groupId}/user_list.json`)
+      .then(response => {
+        if (response.status === 404) {
+          window.location.href = '/'; // ページが見つからない場合はトップページにリダイレクト
+          return;
         }
-      }
-    };
-    xhr.send();
+        if (!response.ok) {
+          throw new Error('ネットワークの応答が正常でありません。'); // ネットワークエラーの場合はエラーメッセージを投げる
+        }
+        return response.json();
+      })
+      .then(data => {
+        var userListHTML = data.user_list.map(function(user) {
+          return `<li class='list-group-item'><a href='${user.path}'>${user.name}</a></li>`;
+        }).join('');
+        userListElement.innerHTML = userListHTML; // ユーザーリストを更新
+      })
+      .catch(error => {
+        console.error('問題が発生しました:', error); // エラーメッセージをコンソールに出力
+      });
   }
 
   if (userListInterval) {
-    clearInterval(userListInterval);
+    clearInterval(userListInterval); // 既存のインターバルをクリア
   }
 
-  userListInterval = setInterval(updateUserList, 5000);
+  userListInterval = setInterval(updateUserList, 5000); // ユーザーリストを定期的に更新するインターバルを設定
 });
 
 document.addEventListener('turbolinks:before-cache', function() {
   if (userListInterval) {
-    clearInterval(userListInterval);
+    clearInterval(userListInterval); // キャッシュする前にインターバルをクリア
   }
 });

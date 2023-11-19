@@ -6,7 +6,7 @@
 
   <div class="mb-3">
     <%= form.label :introduction, '自己紹介', for: 'user-introduction-input', class: 'form-label' %>
-    <%= form.text_area :introduction, class: 'form-control', id: 'user-introduction-input' %>
+    <%= form.text_area :introduction, rows: 6, class: 'form-control', id: 'user-introduction-input', style: 'min-height: 150px;' %>
   </div>
 
   <%= form.submit "ユーザー情報更新", class: 'btn btn-success' %>

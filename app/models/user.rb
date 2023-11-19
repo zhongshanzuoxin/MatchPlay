@@ -14,7 +14,7 @@ class User < ApplicationRecord
   # 通知モデルへの関連付けを追加
   has_many :notifications, dependent: :destroy
 
-  has_one_attached :profile_image
+  has_one_attached :icon
 
   # ブロック関連の関連付け
   # ユーザーがブロックされている関係
@@ -33,9 +33,15 @@ class User < ApplicationRecord
 
 
   # ユーザー名と自己紹介のバリデーション
-  validates :name, presence: true, length: { maximum: 15 }, format: { without: /(\w)\1{4,}/ }
-  validates :introduction, length: { maximum: 300 }
+  validates :name, 
+    presence: { message: 'は空で保存できません' },
+    length: { maximum: 15, too_long: 'は%{count}文字以内で入力してください' },
+    format: { without: /(\w)\1{4,}/, message: '同じ文字は連続して使用できません' }
 
+  validates :introduction,
+    length: { maximum: 300, too_long: '300字以内にしてください' }
+    
+    
   # ユーザーをブロックする
   def block(user_id)
     blocking.create(blocked_id: user_id)

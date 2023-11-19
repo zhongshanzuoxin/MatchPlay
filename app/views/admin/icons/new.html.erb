@@ -1,0 +1,5 @@
+<!-- app/views/admin/icons/new.html.erb -->
+<%= form_with(model: @admin, url: admin_icons_path, local: true) do |form| %>
+  <%= form.file_field :icons, multiple: true %>
+  <%= form.submit "アップロード" %>
+<% end %>

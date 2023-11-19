@@ -1,0 +1,42 @@
+<% if user_signed_in? %>
+  <!-- ユーザーがサインインしている場合の通知アイコンとドロップダウンメニュー -->
+  <div class="dropdown ms-auto me-2">
+    <button class="btn btn-link dropdown-toggle d-lg-flex " type="button" id="notification-icon" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="fa-solid fa-bell" style="color: #ffffff;"></i>
+      <% unread_notifications_count = current_user.notifications.where(read: false).count %>
+      <% if unread_notifications_count.positive? %>
+        <span class="badge bg-danger" id="unread-count"><%= unread_notifications_count %></span>
+      <% end %>
+    </button>
+
+    <!-- 通知メニュー -->
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notification-icon">
+      <% if current_user.notifications.empty? %>
+        <!-- 通知がない場合のメッセージ -->
+        <li>
+          <a class="dropdown-item" href="#">
+            <div class="text-muted">
+              通知はありません
+            </div>
+          </a>
+        </li>
+      <% else %>
+        <!-- 最新の通知を表示 -->
+        <% notifications = current_user.notifications.last(5).reverse %>
+        <% notifications.each_with_index do |notification, index| %>
+          <li>
+            <a class="dropdown-item" href="#">
+              <div class="text-muted small">
+                <%= time_ago_in_words(notification.created_at) %>前
+              </div>
+              <%= notification.content %>
+            </a>
+          </li>
+          <% unless index == notifications.length - 1 %>
+            <hr class="dropdown-divider">
+          <% end %>
+        <% end %>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

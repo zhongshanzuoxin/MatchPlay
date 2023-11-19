@@ -1,12 +1,11 @@
 class Public::UsersController < ApplicationController
-  before_action :show, only: [:edit, :update, :blocked_users]
+  before_action :set_user, only: [:show, :edit, :update, :blocking_users]
 
   # ユーザーの詳細情報を表示
   def show
-    @user = User.find(params[:id])
   end
 
-  # ユーザー情報の編集フォームを表示 (JavaScript レスポンス対応)
+  # ユーザー情報の編集フォームを表示
   def edit
     respond_to do |format|
       format.js
@@ -20,13 +19,13 @@ class Public::UsersController < ApplicationController
         format.html { redirect_to @user, notice: 'プロフィールが更新されました。' }
       end
     else
-      redirect_to user_path(@user), alert: '名前は空で保存できません'
+      error_messages = @user.errors.full_messages.join(', ')
+      redirect_to user_path(@user), alert: error_messages
     end
   end
 
   # ブロックユーザー一覧を表示
   def blocking_users
-    @user = User.find(params[:id])
     # ログインしているユーザーと比較してブロックユーザーを表示
     if @user == current_user
       @blocking_users = @user.blocking_user
@@ -41,6 +40,10 @@ class Public::UsersController < ApplicationController
   end
 
   private
+  
+  def set_user
+    @user = User.find(params[:id])
+  end
 
   # ユーザー情報のパラメーターを許可
   def user_params
