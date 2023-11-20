@@ -18,17 +18,18 @@
         <!-- 管理者がサインインしている場合のメニュー -->
         <% if admin_signed_in? %>
           <li class="nav-item">
-            <%= link_to 'ユーザー一覧', admin_users_path, class: 'btn btn-dark' %>
+            <%= link_to 'ユーザー一覧', admin_users_path, class: 'btn btn-dark me-2' %>
           </li>
           <li class="nav-item">
-            <%= link_to 'ログアウト', destroy_admin_session_path, method: :get, class: 'btn btn-dark' %>
+            <%= link_to 'ユーザーアイコン登録', new_admin_icon_path, class: 'btn btn-dark me-2' %>
           </li>
           <li class="nav-item">
-            <%= link_to 'ユーザー画像一覧', admin_users_path, class: 'btn btn-dark' %>
+            <%= link_to 'ユーザーアイコン一覧', admin_icons_path, class: 'btn btn-dark me-2' %>
           </li>
           <li class="nav-item">
-            <%= link_to 'ユーザー画像登録', new_admin_icon_path, class: 'btn btn-dark' %>
+            <%= link_to 'ログアウト', destroy_admin_session_path, method: :get, class: 'btn btn-dark me-2' %>
           </li>
+
 
         <!-- ユーザーがサインインしている場合のメニュー -->
         <% elsif user_signed_in? %>
@@ -59,7 +60,7 @@
             <%= link_to '新規登録', new_user_registration_path, class: 'btn btn-dark me-2' %>
           </li>
           <li class="nav-item">
-            <%= link_to 'ログイン', new_user_session_path, class: 'btn btn-dark' %>
+            <%= link_to 'ログイン', new_user_session_path, class: 'btn btn-dark me-5' %>
           </li>
         <% end %>
       </ul>

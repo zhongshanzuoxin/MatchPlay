@@ -17,17 +17,31 @@
               </div>
 
               <div class="card-body">
-                <p class="card-title"><%= link_to group.owner.name, user_path(group.owner) %></p>
+                <p class="card-title">
+                  <%= link_to user_path(group.owner) do %>
+                    <% if group.owner.image.attached? %>
+                      <!-- グループオーナーのプロフィールアイコンを表示 -->
+                      <%= image_tag group.owner.get_profile_icon, class: 'card-img-top rounded-circle me-3', style: 'width: 40px; height: 40px;' %>
+                    <% else %>
+                      <!-- デフォルトのアイコンを表示 -->
+                      <%= image_tag 'default_icon.png', class: 'card-img-top rounded-circle me-3', style: 'width: 40px; height: 40px;' %>
+                    <% end %>
+                  <% end %>
+                  <%= link_to group.owner.name, user_path(group.owner) %>
+                </p>
+
                 <p>
                   <% group.tags.each do |tag| %>
+                    <!-- グループのタグを表示 -->
                     <span class="badge bg-primary me-2"><%= tag.tag_name %></span>
                   <% end %>
                 </p>
+                <!-- グループの紹介文を表示 -->
                 <p class="card-text"><%= group.introduction %></p>
                 <% if current_user %>
                   <% if group.users.include?(current_user) %>
                     <!-- 参加している場合の表示 -->
-                      <%= link_to "参加中のグループを見る", group_path(group), class: "btn btn-primary btn-sm" %>
+                    <%= link_to "参加中のグループを見る", group_path(group), class: "btn btn-primary btn-sm" %>
                   <% else %>
                     <% if current_user.groups.any? && !group.users.include?(current_user) %>
                       <!-- 他のグループに参加中の場合の表示 -->

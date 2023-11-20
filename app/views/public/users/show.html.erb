@@ -1,9 +1,10 @@
 <div class="container mt-5">
   <div class="row">
-    <!-- プロフィール画像 -->
+    
+    <!-- プロフィールアイコン -->
     <div class="col-md-4">
       <div class="card position-relative">
-        <%= image_tag 'azarasi.png', class: 'card-img-top rounded-circle' %>
+        <%= image_tag @user.get_profile_icon, class: 'card-img-top rounded-circle' %>
         <div class="card-body">
           <% if current_user != @user %>
             <% if current_user.blocking?(@user) %>
@@ -12,9 +13,10 @@
               <%= link_to "ブロックする", block_path(@user.id), method: :post, class: 'btn btn-success btn-block mb-2' %>
             <% end %>
           <% end %>
-          <div class="card-bottom-buttons">
+          <div class="card-bottom-buttons text-center">
             <% if current_user == @user %>
-              <%= link_to "ブロックユーザーリスト", blocking_users_user_path(@user), class: 'btn btn-primary btn-block' %>
+              <%= link_to "ブロックユーザーリスト", blocking_users_user_path(@user), class: 'btn btn-primary btn-block mt-2' %>
+              <%= link_to "アイコンを選択", icon_index_user_path, class: 'btn btn-secondary btn-block btn-select-icon mt-2' %>
             <% end %>
           </div>
         </div>

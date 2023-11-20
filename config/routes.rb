@@ -13,9 +13,9 @@ devise_for :users,skip: [:passwords], controllers: {
   #管理者側
   namespace :admin do
     get "/", to: "homes#top"
-    resources :icons, only: [:new, :create]
+    resources :icons, only: [:new, :create, :index, :destroy]
     resources :users, only: [:index, :show, :edit, :update] do
-      get 'search_messages', on: :member 
+      get 'search_messages', on: :member
     end
   end
 
@@ -38,6 +38,8 @@ devise_for :users,skip: [:passwords], controllers: {
     resources :users, only: [:show, :edit, :update] do
         member do
         get :blocking_users
+        get :icon_index
+        patch :update_icon
       end
     end
     post 'block/:id' => 'relationships#block', as: 'block'

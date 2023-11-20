@@ -1,0 +1,23 @@
+<div class="container text-center mt-5">
+  <h1>アイコン一覧</h1>
+
+  <% if @icons.any? %>
+
+    <div class="row justify-content-center mt-3">
+      <% @icons.each do |icon| %>
+        <div class="col-auto">
+          <div class="card mb-4">
+            <%= image_tag(icon.variant(resize_to_limit: [100, 100]), class: 'icon-small') %>
+            <%= link_to '削除', admin_icon_path(icon), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'btn btn-danger' %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p>アップロードされたアイコンはありません。</p>
+  <% end %>
+    <% if @pagy.pages > 1 %>
+      <%= raw pagy_nav(@pagy, link_extra: 'class="page-link"', item_extra: 'class="page-item"') %>
+    <% end %>
+  <%= link_to '新しいアイコンをアップロード', new_admin_icon_path, class: 'btn btn-primary' %>
+</div>

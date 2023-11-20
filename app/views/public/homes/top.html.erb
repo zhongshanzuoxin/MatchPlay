@@ -1,6 +1,11 @@
-<div class="hero-section">
-  <div class="container">
+<div class="container d-flex justify-content-center align-items-center vh-100">
+  <div class="hero-section text-center">
     <h1>Experience MatchPlay</h1>
     <p>Get Your Game On</p>
+
+    <% unless current_user %>
+      <%= link_to "新規登録", new_user_registration_path, class: "btn btn-primary" %>
+      <%= link_to "ログイン", new_user_session_path, class: "btn btn-secondary" %>
+    <% end %>
   </div>
 </div>
