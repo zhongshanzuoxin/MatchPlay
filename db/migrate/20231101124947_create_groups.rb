@@ -4,7 +4,7 @@ class CreateGroups < ActiveRecord::Migration[6.1]
       t.text :introduction
       t.text :game_title, null: false
       t.string :tag
-      t.integer :owner_id, null: false
+      t.bigint :owner_id, null: false
       t.integer :max_users, null: false
 
       t.timestamps
