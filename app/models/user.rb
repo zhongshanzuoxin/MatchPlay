@@ -39,7 +39,7 @@ class User < ApplicationRecord
     format: { without: /(\w)\1{4,}/, message: '同じ文字は連続して使用できません' }
   validates :introduction,
     presence: { message: 'は空では保存できません' },
-    length: { maximum: 300, too_long: '300字以内にしてください' }
+    length: { maximum: 250, too_long: '250字以内にしてください' }
 
   # ゲストアカウントの処理
   def self.create_guest
