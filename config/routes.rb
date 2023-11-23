@@ -12,7 +12,7 @@ devise_for :users,skip: [:passwords], controllers: {
 
 # ゲストログインのルーティング
 devise_scope :user do
-  post 'guest_login', to: 'public/sessions#guest_login'
+  get 'guest_login', to: 'public/sessions#guest_login'
 end
 
   #管理者側
