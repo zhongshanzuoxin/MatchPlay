@@ -1,0 +1,31 @@
+<div class="container mt-5 text-center">
+  <h2 class="mb-5">アイコン一覧</h2>
+
+  <%= form_with(model: @user, url: icon_path(@user), method: :patch, local: true) do |form| %>
+
+    <div class="row justify-content-center">
+      <% if @icons.any? %>
+        <% @icons.each do |image| %>
+          <div class="col-6 col-md-3 col-lg-2 mb-3">
+            <%= label_tag "icon_#{image.id}" do %>
+              <%= image_tag(image.variant(resize_to_limit: [100, 100]), class: "icon-image") %>
+              <%= radio_button_tag('selected_icon_id', image.id, false, id: "icon_#{image.id}", class: 'icon-radio') %>
+            <% end %>
+          </div>
+        <% end %>
+        <!-- ページネーションの表示（複数ページがある場合） -->
+        <% if @pagy.pages > 1 %>
+          <%= raw pagy_nav(@pagy, link_extra: 'class="page-link"', item_extra: 'class="page-item"') %>
+        <% end %>
+
+        <!-- アイコンが存在する場合にボタンを表示 -->
+        <div class="text-center">
+          <%= form.submit 'アイコンを選択', class: 'btn btn-primary mt-2 d-inline-block', style: 'width: 200px;' %>
+        </div>
+      <% else %>
+        <!-- アイコンが存在しない場合のメッセージ -->
+        <h4>アイコンがありません。</h4>
+      <% end %>
+    </div>
+  <% end %>
+</div>

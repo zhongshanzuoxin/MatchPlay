@@ -7,10 +7,15 @@
           <% @blocking_users.each do |blocking_user| %>
             <li class="list-group-item d-flex justify-content-between align-items-center" id="user_<%= blocking_user.id %>">
               <%= link_to blocking_user.name, user_path(blocking_user) %>
-              <%= link_to 'ブロック解除', unblock_path(blocking_user.id), method: :delete, class: 'btn btn-danger block-link', data: { remote: true, user_id: blocking_user.id } %>
+              <%= link_to 'ブロック解除', unblock_user_path(blocking_user.id), method: :delete, class: 'btn btn-danger block-link', data: { remote: true, user_id: blocking_user.id } %>
             </li>
           <% end %>
         </ul>
+
+        <% if @pagy.pages > 1 %>
+          <%= raw pagy_nav(@pagy, link_extra: 'class="page-link"', item_extra: 'class="page-item"') %>
+        <% end %>
+        
       <% else %>
         <h4 class="text-center">ブロックしているユーザーはいません</h4>
       <% end %>

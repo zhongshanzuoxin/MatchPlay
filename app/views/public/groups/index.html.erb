@@ -9,7 +9,7 @@
       <% @groups.each do |group| %>
         <div class="row d-flex justify-content-center mt-5">
           <div class="col-12 col-md-6">
-            <div class="card">
+            <div class="card mb-5">
               <div class="card-header">
                 <!-- グループのゲームタイトルと参加ユーザーカウントを表示 -->
                 <%= group.game_title %>
@@ -61,5 +61,6 @@
       <!-- 該当するグループがない場合のメッセージを表示 -->
       <h4 class="text-center mt-4">該当するグループがありません。</h4>
     <% end %>
+
   </div>
 </div>

@@ -1,5 +1,5 @@
 class Public::UsersController < ApplicationController
-  before_action :set_user, only: [:show, :edit, :update, :blocking_users, :icon_index, :update_icon]
+  before_action :set_user, only: [:show, :edit, :update, :blocking_users]
   include Pagy::Backend
 
   # ユーザーの詳細情報を表示
@@ -28,36 +28,11 @@ class Public::UsersController < ApplicationController
   end
 
 
-  # ユーザーアイコン一覧を表示
-  def icon_index
-    @pagy, @attachments = pagy(ActiveStorage::Attachment.where(record_type: 'Admin', name: 'image'), items: 4) 
-  end
-
-
-  # ユーザーアイコンを更新
-  def update_icon
-    begin
-      ActiveRecord::Base.transaction do
-        @icon = ActiveStorage::Attachment.find(params[:selected_icon_id])
-        blob = @icon.blob
-        @user.image.attach(blob)
-      end
-      redirect_to @user, notice: 'アイコンが更新されました。'
-    rescue ActiveRecord::RecordNotFound
-      # ユーザーまたはアイコンが見つからない場合
-      redirect_to some_path, alert: 'ユーザーまたはアイコンが見つかりませんでした。'
-    rescue => e
-      # その他のエラー
-      redirect_to @user, alert: "アイコンの更新に失敗しました: #{e.message}"
-    end
-  end
-
-
   # ブロックユーザー一覧を表示
   def blocking_users
     # ログインしているユーザーと比較してブロックユーザーを表示
     if @user == current_user
-      @blocking_users = @user.blocking_user
+      @pagy, @blocking_users = pagy(@user.blocking_user)
     else
       redirect_to root_path, alert: 'アクセス権限がありません。'
     end
@@ -68,6 +43,7 @@ class Public::UsersController < ApplicationController
   def dummy
     redirect_to new_user_registration_path
   end
+  
 
   private
 

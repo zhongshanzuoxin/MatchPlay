@@ -1,5 +1,3 @@
-/* Bootstrap 5 CSSの読み込み */
-/*@import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css';*
 
 /* Pagyスタイルの読み込み */
 @import "pagy";
@@ -10,7 +8,9 @@
 /* ページ全体のフォントファミリーを設定 */
 body {
   font-family: 'M PLUS Rounded 1c', sans-serif;
+  background-color: #6c757d29;
 }
+
 
 /* チャット欄の高さの設定 */
 .chat-container {
@@ -29,6 +29,11 @@ body {
   border-top-color: #ffffff; /* ドロップダウン矢印の色設定 */
 }
 
+.bg-dark {
+  color: #ffffff;
+  border-radius: 5px;
+}
+
 /* ダークなボタンのスタイル設定 */
 .btn-dark {
   background-color: #000000; /* 背景色設定 */
@@ -39,7 +44,7 @@ body {
 /* ダークなボタンのホバースタイル設定 */
 .btn-dark:hover {
   text-decoration: underline; /* カーソルがボタンに合った際に下線を表示 */
-  color: #00ff00; /* ホバー時の文字色設定 */
+  color: #44d62c; /* ホバー時の文字色設定 */
   background-color: #000000; /* ホバー時の背景色設定 */
 }
 
@@ -52,6 +57,7 @@ body {
 
 /* メディアクエリ: タブレット以下の画面幅に対するスタイル設定 */
 @media (max-width: 992px) {
+
   .navbar-nav .nav-item .btn {
     display: block;
     width: 100%;
@@ -69,5 +75,24 @@ body {
   .navbar-toggler-icon-custom {
     background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255, 255, 255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
     /* ナビゲーションのトグルボタンのアイコンをカスタム画像に設定 */
+  }
+}
+
+/* Bootstrapのlgブレークポイント以上の幅であれば */
+@media (min-width: 992px) { 
+  .footerFixed {
+    min-height: 100vh; /* コンテンツの高さの最小値＝ブラウザの高さ */
+    position: relative; /* 相対位置 */
+    box-sizing: border-box;
+    padding-bottom: 50px;
+  }
+
+  footer {
+    background: #000000;
+    color: #ffffff;
+    width: 100%;
+    position: absolute; /* 絶対位置 */
+    bottom: 0;
+    height: 50px;
   }
 }

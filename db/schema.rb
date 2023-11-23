@@ -53,13 +53,11 @@ ActiveRecord::Schema.define(version: 2023_11_14_130122) do
   end
 
   create_table "group_tags", force: :cascade do |t|
-    t.integer "group_id"
-    t.integer "tag_id"
+    t.bigint "group_id"
+    t.bigint "tag_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["group_id", "tag_id"], name: "index_group_tags_on_group_id_and_tag_id", unique: true
-    t.index ["group_id"], name: "index_group_tags_on_group_id"
-    t.index ["tag_id"], name: "index_group_tags_on_tag_id"
   end
 
   create_table "group_users", force: :cascade do |t|
@@ -120,8 +118,9 @@ ActiveRecord::Schema.define(version: 2023_11_14_130122) do
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "name", null: false
-    t.text "introduction"
+    t.text "introduction", default: "よろしくお願いします", null: false
     t.boolean "is_active", default: true, null: false
+    t.boolean "guest"
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
@@ -133,8 +132,6 @@ ActiveRecord::Schema.define(version: 2023_11_14_130122) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "group_tags", "groups"
-  add_foreign_key "group_tags", "tags"
   add_foreign_key "group_users", "groups"
   add_foreign_key "group_users", "users"
   add_foreign_key "groups", "users", column: "owner_id"

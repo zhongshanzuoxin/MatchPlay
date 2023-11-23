@@ -10,6 +10,11 @@ devise_for :users,skip: [:passwords], controllers: {
   sessions: 'public/sessions'
 }
 
+# ゲストログインのルーティング
+devise_scope :user do
+  post 'guest_login', to: 'public/sessions#guest_login'
+end
+  
   #管理者側
   namespace :admin do
     get "/", to: "homes#top"
@@ -38,12 +43,11 @@ devise_for :users,skip: [:passwords], controllers: {
     resources :users, only: [:show, :edit, :update] do
         member do
         get :blocking_users
-        get :icon_index
-        patch :update_icon
+        resources :icons, only: [:index, :update]
+        post 'block/:id' => 'relationships#block', as: 'block'
+        delete 'unblock/:id' => 'relationships#unblock', as: 'unblock'
       end
     end
-    post 'block/:id' => 'relationships#block', as: 'block'
-    delete 'unblock/:id' => 'relationships#unblock', as: 'unblock'
   end
 end
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html

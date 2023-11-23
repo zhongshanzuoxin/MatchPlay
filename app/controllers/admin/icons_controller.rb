@@ -9,25 +9,30 @@ class Admin::IconsController < ApplicationController
 
   # アイコンの一覧を表示
   def index
-    @pagy, @icons = pagy(@admin.image.blobs, items: 6)
+    @pagy, @icons = pagy(@admin.image, items: 6)
   end
 
   # アイコンをアップロード
   def create
-    @admin.image.attach(icon_params[:image]) 
+    @admin.image.attach(icon_params[:image])
     if @admin.save
       redirect_to new_admin_icon_path, notice: "アイコンがアップロードされました。"
     else
-      redirect_to new_admin_icon_path, alert: error_messages 
+      redirect_to new_admin_icon_path, alert: error_messages
     end
   end
 
   # アイコンを削除
   def destroy
-    @icon = ActiveStorage::Attachment.find(params[:id])
-    @icon.purge
-    redirect_to admin_icons_path, notice: 'アイコンが削除されました。'
+    @icon = ActiveStorage::Attachment.find_by(id: params[:id])
+    if @icon
+      @icon.purge
+      redirect_to admin_icons_path, notice: 'アイコンが削除されました。'
+    else
+      redirect_to admin_icons_path, alert: 'アイコンが見つかりませんでした。'
+    end
   end
+
 
   private
 

@@ -2,47 +2,17 @@ class Public::GroupsController < ApplicationController
   before_action :set_group, only: [:edit, :update, :show, :destroy, :ensure_correct_user, :join, :leave]
   before_action :ensure_correct_user, only: [:edit, :update, :destroy]
   before_action :check_user_can_create_only_one_group, only: [:new, :create]
-
+  include Pagy::Backend
   # グループ一覧を取得するアクション
   def index
-    # ユーザーが選んだタグと入力したゲームタイトルを取得
-    selected_tags = [
-      params[:tag_ids1],
-      params[:tag_ids2],
-      params[:tag_ids3],
-      params[:tag_ids4]
-    ].compact.flatten.map(&:to_i)
-
-    # グループと紐づくタグの情報を含むクエリを作成
-    groups = Group.includes(:tags)
-
-    # 選択したタグがグループに紐づいている場合、検索条件に追加
-    selected_tags.each_with_index do |tag_id, index|
-      next if tag_id.blank?
-
-      # タグがグループに紐づいているかをLEFT JOINで確認
-      tag_alias = "tag#{index + 1}"
-      groups = groups.joins("LEFT JOIN group_tags #{tag_alias} ON #{tag_alias}.group_id = groups.id AND #{tag_alias}.tag_id = #{tag_id.to_i}")
-    end
-
-    # 入力されたゲームタイトルがあれば検索条件に追加
+    selected_tags = fetch_selected_tags
+    groups = fetch_initial_groups(selected_tags)
     game_title = params[:game_title]
-    groups = groups.where("LOWER(groups.game_title) LIKE LOWER(?)", "%#{game_title}%") if game_title.present?
 
-    # ブロックしている情報、ブロックされている情報を取得
-    blocked_user_ids = current_user.blocked_user.pluck(:id)
-    blocking_user_ids = current_user.blocking_user.pluck(:id)
+    # ブロックリストの取得
+    blocked_user_ids, blocking_user_ids = fetch_block_lists
 
-    # グループをフィルタリング
-    @groups = groups.distinct.select do |group|
-      tags_diff = selected_tags - group.tag_ids
-
-      # 選択したタグが一部でも含まれているか、ゲームタイトルが一致し、かつブロックされていない場合に選択
-      (tags_diff.length < selected_tags.length) || (game_title.present? && !blocked_user_ids.include?(group.owner_id) && !blocking_user_ids.include?(group.owner_id))
-    end
-
-    # ブロックしたユーザーが作成したグループを除外
-    @groups = @groups.reject { |group| blocked_user_ids.include?(group.owner_id) || blocking_user_ids.include?(group.owner_id) }
+    @groups = filter_groups(groups, selected_tags, game_title, blocked_user_ids, blocking_user_ids)
   end
 
   # グループに参加するアクション
@@ -145,6 +115,40 @@ class Public::GroupsController < ApplicationController
 
   private
 
+
+  # 選択されたタグを取得
+  def fetch_selected_tags
+    [params[:tag_ids1], params[:tag_ids2], params[:tag_ids3], params[:tag_ids4]].compact.flatten.map(&:to_i)
+  end
+
+  # 初期クエリを設定
+  def fetch_initial_groups(selected_tags)
+    groups = Group.includes(:tags)
+
+    selected_tags.each_with_index do |tag_id, index|
+      next if tag_id.blank?
+      tag_alias = "tag#{index + 1}"
+      groups = groups.joins("LEFT JOIN group_tags #{tag_alias} ON #{tag_alias}.group_id = groups.id AND #{tag_alias}.tag_id = #{tag_id.to_i}")
+    end
+
+    groups
+  end
+
+  # ブロックリストを取得
+  def fetch_block_lists
+    [current_user.blocked_user.pluck(:id), current_user.blocking_user.pluck(:id)]
+  end
+
+  # グループをフィルタリング
+  def filter_groups(groups, selected_tags, game_title, blocked_user_ids, blocking_user_ids)
+    groups = groups.where("LOWER(groups.game_title) LIKE LOWER(?)", "%#{game_title}%") if game_title.present?
+
+    groups.distinct.select do |group|
+      tags_diff = selected_tags - group.tag_ids
+      (tags_diff.length < selected_tags.length) || (game_title.present? && !blocked_user_ids.include?(group.owner_id) && !blocking_user_ids.include?(group.owner_id))
+    end.reject { |group| blocked_user_ids.include?(group.owner_id) || blocking_user_ids.include?(group.owner_id) }
+  end
+  
   # ユーザーをセット
   def set_group
     @group = Group.find_by(id: params[:id])

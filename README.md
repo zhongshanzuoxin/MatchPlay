@@ -18,12 +18,6 @@ SNSが苦手なユーザーでも仲間を集めてプレイできるような�
 ​・SNSを使わずにオンラインゲームで仲間を集めたい時
  ・他のユーザーと気軽に集まって遊びたい時
 ## 設計書
-・テーブル定義書
-https://docs.google.com/spreadsheets/d/1YTcw247YjJ1UlEoZfZFCASjdG1SywhEE/edit?usp=sharing&ouid=112548230942566283837&rtpof=true&sd=true
-
-・詳細設計書
-https://docs.google.com/spreadsheets/d/16rqjvOA_UvzvbUlpoc9WjQuxvTfYAGPm1eNCWHJB3io/edit?usp=sharing
-
 ・ER図
 https://drive.google.com/file/d/159uXAxQ8ZLKeCMwmlz691ATdXNa1xXZu/view?usp=sharing
 ​
@@ -33,3 +27,10 @@ https://drive.google.com/file/d/159uXAxQ8ZLKeCMwmlz691ATdXNa1xXZu/view?usp=shari
 - フレームワーク：Ruby on Rails
 - JSライブラリ：jQuery
 - IDE：Cloud9
+
+## 使用素材
+- FLAT ICON DESIGN
+- http://flat-icon-design.com/
+- 
+- Hatchful
+- https://www.shopify.com/jp/tools/logo-maker
