@@ -14,7 +14,7 @@ devise_for :users,skip: [:passwords], controllers: {
 devise_scope :user do
   post 'guest_login', to: 'public/sessions#guest_login'
 end
-  
+
   #管理者側
   namespace :admin do
     get "/", to: "homes#top"
