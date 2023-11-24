@@ -4,17 +4,18 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   # ユーザーとグループの関連付け
-  has_many :group_users
+  has_many :group_users, dependent: :destroy
   has_many :groups, through: :group_users
 
   # ユーザーが所有するグループの関連付け
-  has_many :owned_groups, class_name: 'Group', foreign_key: :owner_id
-  has_many :messages
+  has_many :owned_groups, class_name: 'Group', foreign_key: :owner_id, dependent: :destroy
+  has_many :messages, dependent: :destroy
 
   # 通知モデルへの関連付けを追加
   has_many :notifications, dependent: :destroy
 
-  has_one_attached :image, dependent: :destroy
+  # プロフィールアイコン関連
+  belongs_to :profile_icon, optional: true
 
   # ブロック関連の関連付け
   # ユーザーがブロックされている関係
@@ -27,6 +28,8 @@ class User < ApplicationRecord
   has_many :blocking_user, through: :blocking, source: :blocked
   has_many :blocked_user, through: :blocked, source: :blocking
 
+  # 名前を部分一致で検索するスコープ
+  scope :search_by_name, -> (name) { where("name LIKE ?", "%#{name}%") }
 
   # ユーザーの is_active 属性が false に変更されたときに呼び出されるコールバック
   after_update :handle_inactive_status, if: -> { saved_change_to_is_active? && !is_active }
@@ -45,21 +48,15 @@ class User < ApplicationRecord
   def self.create_guest
     guest_name = "ゲストユーザー#{SecureRandom.hex(4)}"
     create!(email: "guest_#{SecureRandom.hex(8)}@example.com", password: Devise.friendly_token[0, 20], name: guest_name, guest: true)
-    # 必要に応じて他の初期設定を行う
   end
 
 
   # アイコンについての処理
-  def default_profile_icon(size: [width, height])
-    'default_icon.png'
-  end
-
-  # アイコンについての処理
-  def get_profile_icon(size: [350, 350])
-    if image.attached?
-      image.variant(resize_to_limit: size)
+  def profile_icon_url(width: 100, height: 100)
+    if profile_icon&.image&.attached?
+      Rails.application.routes.url_helpers.rails_representation_url(profile_icon.image.variant(resize_to_limit: [width, height]).processed, only_path: true)
     else
-      default_profile_icon(size: size)
+      ActionController::Base.helpers.asset_path('default_icon.png')
     end
   end
 
@@ -97,7 +94,7 @@ class User < ApplicationRecord
     group_users.destroy_all
   end
 
-  # is_activeがfalseになった場合グループを自動削除
+  # 作成していたグループを自動削除
   def destroy_related_groups
     owned_groups.destroy_all
   end

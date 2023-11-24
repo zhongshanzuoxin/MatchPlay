@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_11_14_130122) do
+ActiveRecord::Schema.define(version: 2023_11_24_110957) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -98,6 +98,11 @@ ActiveRecord::Schema.define(version: 2023_11_14_130122) do
     t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
+  create_table "profile_icons", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "relationships", force: :cascade do |t|
     t.integer "blocked_id", null: false
     t.integer "blocking_id", null: false
@@ -118,7 +123,8 @@ ActiveRecord::Schema.define(version: 2023_11_14_130122) do
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "name", null: false
-    t.text "introduction", default: "よろしくお願いします", null: false
+    t.string "introduction", default: "よろしくお願いします", null: false
+    t.integer "profile_icon_id"
     t.boolean "is_active", default: true, null: false
     t.boolean "guest"
     t.string "reset_password_token"

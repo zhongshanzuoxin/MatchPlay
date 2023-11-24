@@ -45,14 +45,15 @@ class Public::RegistrationsController < Devise::RegistrationsController
 
   protected
   
+  # 名前を許可
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: [:name])
   end 
-
-  # If you have extra params to permit, append them to the sanitizer.
-  # def configure_sign_up_params
-  #   devise_parameter_sanitizer.permit(:sign_up, keys: [:attribute])
-  # end
+  
+  # アカウント作成後の遷移先
+  def after_sign_up_path_for(resource)
+    user_path(resource)
+  end 
 
   # If you have extra params to permit, append them to the sanitizer.
   # def configure_account_update_params

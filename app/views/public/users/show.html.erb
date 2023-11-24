@@ -3,7 +3,7 @@
     <!-- プロフィールアイコン -->
     <div class="col-md-4">
       <div class="card position-relative">
-        <%= image_tag @user.get_profile_icon, class: 'card-img-top rounded-circle' %>
+        <%= image_tag(@user.profile_icon_url(width: 400, height: 400), class: 'card-img-top rounded-circle') %>
         <div class="card-body">
           <% if current_user != @user %>
             <% if current_user.blocking?(@user) %>
@@ -15,7 +15,7 @@
           <div class="card-bottom-buttons text-center">
             <% if current_user == @user %>
               <%= link_to "ブロックユーザーリスト", blocking_users_user_path(@user), class: 'btn btn-primary btn-block mt-2' %>
-              <%= link_to "アイコンを選択", icons_path(@user), class: 'btn btn-secondary btn-block btn-select-icon mt-2' %>
+              <%= link_to "アイコンを選択", user_profile_icons_path(@user), class: 'btn btn-secondary btn-block btn-select-icon mt-2' %>
             <% end %>
           </div>
         </div>
@@ -23,24 +23,26 @@
     </div>
 
     <!-- ユーザーネームと自己紹介 -->
-    <div class="col-md-8">
-      <div class="row">
-        <div class="col">
-          <h2 class="profile-label mb-3 mt-3">ユーザー名</h2>
-        </div>
-        <% if current_user == @user %>
-          <div class="col-auto">
-            <%= button_tag("編集", class: "btn btn-primary mt-3", id: "edit-profile-btn") %>
-          </div>
-        <% end %>
+  <div class="col-md-8">
+    <div class="row">
+      <div class="col">
+        <h2 class="profile-label mb-3 mt-3">ユーザー名</h2>
       </div>
-      <h3><%= @user.name %></h3>
-      <h2 class="profile-label mt-4">自己紹介</h2>
-      <p class="mt-3"><%= @user.introduction %></p>
-      <!-- プロフィール編集フォーム -->
+      <% if current_user == @user && !current_user.guest? %>
+        <div class="col-auto">
+          <%= button_tag("編集", class: "btn btn-primary mt-3", id: "edit-profile-btn") %>
+        </div>
+      <% end %>
+    </div>
+    <h3><%= @user.name %></h3>
+    <h2 class="profile-label mt-4">自己紹介</h2>
+    <p class="mt-3"><%= @user.introduction %></p>
+    <!-- プロフィール編集フォーム -->
+    <% if !@user.guest? %>
       <div id="edit-profile-form" style="display: none;">
         <%= render 'public/users/edit', user: @user %>
       </div>
-    </div>
+    <% end %>
+  </div>
   </div>
 </div>

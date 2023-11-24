@@ -16,5 +16,7 @@ import "./user_count";
 import "./user_list";
 import "./form_validation";
 import "./toastr";
-import "./block_users"
-import "./notification"
+import "./block_users";
+import "./notification";
+import "./admin_suggest";
+import "./game_title_suggest";

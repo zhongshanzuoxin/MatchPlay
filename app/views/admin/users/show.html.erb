@@ -7,13 +7,13 @@
       <!-- メールアドレスの表示 -->
       <div class="mb-3">
         <strong>メールアドレス:</strong>
-        <p class="form-text"><%= @user.email %></p>
+        <span><%= @user.email %></span>
       </div>
 
       <!-- 名前の表示 -->
       <div class="mb-3">
         <strong>名前:</strong>
-        <p class="form-text"><%= @user.name %></p>
+        <span><%= @user.name %></span>
       </div>
 
       <!-- アクティブステータスのラジオボタン -->
@@ -44,11 +44,14 @@
       <h2>メッセージ履歴</h2>
 
       <!-- メッセージ検索フォーム -->
-      <%= form_with(url: search_messages_admin_user_path(@user), method: :get, class: "d-flex flex-row mb-3 mt-3 align-items-center") do |f| %>
-        <%= f.text_field :search, placeholder: "メッセージを検索", class: "form-control me-2" %>
-        <%= f.submit "検索", class: "btn btn-outline-primary me-2" %>
-        <%= link_to "一覧", admin_user_path(@user), class: "btn btn-secondary", style: "white-space: nowrap;" %>
+      <%= form_with url: search_messages_admin_user_path(@user), method: :get, id: "message-search-form", class: "mb-4" do |f| %>
+        <div class="input-group">
+          <%= f.text_field :search, placeholder: "メッセージを検索", id: "message-search-field", class: "form-control" %>
+          <%= f.submit "検索", class: "btn btn-primary" %>
+        </div>
+        <div id="message-suggest-results" class="list-group"></div>
       <% end %>
+
 
       <!-- メッセージリスト -->
       <div class="list-group">
@@ -65,11 +68,12 @@
           <% end %>
         <% end %>
       </div>
-      <% if @pagy.pages > 1 %>
+      
+        <!-- ページネーション -->
         <div class="pagination justify-content-center">
-          <%= raw pagy_nav(@pagy, link_extra: 'class="page-link"', item_extra: 'class="page-item"') %>
+          <%= render "layouts/pagy" %>
         </div>
-      <% end %>
+      
     </div>
   </div>
 </div>

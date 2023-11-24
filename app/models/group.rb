@@ -9,7 +9,9 @@ class Group < ApplicationRecord
   # グループが削除される前に呼び出されるコールバック
   before_destroy :nullify_messages_group_id
   before_destroy :notify_users_about_deletion, prepend: true
-
+  
+  # ゲームタイトルを部分一致で検索するスコープ
+  scope :search_by_game_title, -> (game_title) { where("LOWER(game_title) LIKE LOWER(?)", "%#{game_title&.downcase}%") }
 
   # ゲームタイトルが空かどうか確認
   validates :game_title, presence: true
@@ -43,7 +45,7 @@ class Group < ApplicationRecord
     end
   end
 
-  # メッセージのgroup_idをnullに設定するメソッド
+  # グループ削除時にメッセージ履歴が消えないようにするための処理
   def nullify_messages_group_id
     messages.update_all(group_id: nil)
   end

@@ -19,13 +19,7 @@
               <div class="card-body">
                 <p class="card-title">
                   <%= link_to user_path(group.owner) do %>
-                    <% if group.owner.image.attached? %>
-                      <!-- グループオーナーのプロフィールアイコンを表示 -->
-                      <%= image_tag group.owner.get_profile_icon, class: 'card-img-top rounded-circle me-3', style: 'width: 40px; height: 40px;' %>
-                    <% else %>
-                      <!-- デフォルトのアイコンを表示 -->
-                      <%= image_tag 'default_icon.png', class: 'card-img-top rounded-circle me-3', style: 'width: 40px; height: 40px;' %>
-                    <% end %>
+                  <%= image_tag(group.owner.profile_icon_url(width: 100, height: 100), style: "width: 50px; height: 50px;", class: 'card-img-top rounded-circle me-3') %>
                   <% end %>
                   <%= link_to group.owner.name, user_path(group.owner) %>
                 </p>
@@ -61,6 +55,6 @@
       <!-- 該当するグループがない場合のメッセージを表示 -->
       <h4 class="text-center mt-4">該当するグループがありません。</h4>
     <% end %>
-
+  <%= render "layouts/pagy" %>
   </div>
 </div>

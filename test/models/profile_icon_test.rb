@@ -1,6 +1,6 @@
 require "test_helper"
 
-class Public::IconsControllerTest < ActionDispatch::IntegrationTest
+class ProfileIconTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

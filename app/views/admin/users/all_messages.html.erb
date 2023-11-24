@@ -1,0 +1,45 @@
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <h1 class="display-6 text-center mb-4">メッセージ検索</h1>
+
+      <!-- 検索フォーム -->
+      <%= form_with url: search_all_messages_admin_users_path, method: :get, id: "message-search-form", class: "mb-4" do |f| %>
+        <div class="input-group mb-3">
+          <%= f.text_field :search, placeholder: "メッセージを検索", id: "message-search-field", class: "form-control" %>
+          <%= f.submit "検索", class: "btn btn-primary" %>
+        </div>
+        <div id="message-suggest-results" class="list-group"></div>
+      <% end %>
+
+      <!-- 検索結果表示 -->
+      <% if @messages.any? %>
+        <ul class="list-group">
+          <% @messages.each do |message| %>
+            <li class="list-group-item">
+              <!-- メッセージとそのユーザーの詳細ページへのリンク -->
+              <%= link_to message.content, admin_user_path(message.user) %>
+              <small class="text-muted">
+                <%= message.created_at.strftime("%Y-%m-%d %H:%M:%S") %>
+              </small>
+            </li>
+          <% end %>
+        </ul>
+
+        <!-- ページネーション -->
+          <div class="pagination justify-content-center mt-3">
+            <%= render "layouts/pagy" %>
+          </div>
+
+      <% else %>
+        <div class="text-center">
+          <% if params[:search].present? %>
+            <h4>一致するメッセージはありません</h4>
+          <% else %>
+            <h4>メッセージはありません</h4>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

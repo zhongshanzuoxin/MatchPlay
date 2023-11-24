@@ -11,10 +11,8 @@
             </li>
           <% end %>
         </ul>
-
-        <% if @pagy.pages > 1 %>
-          <%= raw pagy_nav(@pagy, link_extra: 'class="page-link"', item_extra: 'class="page-item"') %>
-        <% end %>
+        
+        <%= render "layouts/pagy" %>
         
       <% else %>
         <h4 class="text-center">ブロックしているユーザーはいません</h4>

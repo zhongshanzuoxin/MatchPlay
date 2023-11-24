@@ -18,13 +18,16 @@
         <!-- 管理者がサインインしている場合のメニュー -->
         <% if admin_signed_in? %>
           <li class="nav-item">
-            <%= link_to 'ユーザー一覧', admin_users_path, class: 'btn btn-dark me-2' %>
+            <%= link_to 'メッセージ検索', search_all_messages_admin_users_path, class: 'btn btn-dark me-2' %>
           </li>
           <li class="nav-item">
-            <%= link_to 'ユーザーアイコン登録', new_admin_icon_path, class: 'btn btn-dark me-2' %>
+            <%= link_to 'ユーザー検索', admin_users_path, class: 'btn btn-dark me-2' %>
           </li>
           <li class="nav-item">
-            <%= link_to 'ユーザーアイコン一覧', admin_icons_path, class: 'btn btn-dark me-2' %>
+            <%= link_to 'ユーザーアイコン登録', new_admin_profile_icon_path, class: 'btn btn-dark me-2' %>
+          </li>
+          <li class="nav-item">
+            <%= link_to 'ユーザーアイコン一覧', admin_profile_icons_path, class: 'btn btn-dark me-2' %>
           </li>
           <li class="nav-item">
             <%= link_to 'ログアウト', destroy_admin_session_path, method: :get, class: 'btn btn-dark me-2' %>

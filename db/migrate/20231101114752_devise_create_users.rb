@@ -8,6 +8,7 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.1]
       t.string :encrypted_password, null: false, default: ""
       t.string :name, null: false
       t.string :introduction, null: false, default: "よろしくお願いします"
+      t.integer :profile_icon_id
       t.boolean :is_active, null: false, default: true
       t.boolean :guest
 

@@ -2,10 +2,9 @@
   <div class="hero-section text-center">
     <h1>Experience MatchPlay</h1>
     <p>Get Your Game On</p>
-
+    
     <% unless current_user %>
-    <%= link_to 'ゲストログイン', guest_login_path, class: "btn btn-secondary" %>
-
+      <%= link_to 'ゲストログイン', guest_login_path, method: :post, class: "btn btn-secondary" %>
       <%= link_to "新規登録", new_user_registration_path, class: "btn btn-primary" %>
       <%= link_to "ログイン", new_user_session_path, class: "btn btn-primary" %>
     <% end %>

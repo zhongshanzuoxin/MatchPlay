@@ -1,4 +1,5 @@
 class Public::UsersController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_user, only: [:show, :edit, :update, :blocking_users]
   include Pagy::Backend
 
@@ -9,6 +10,9 @@ class Public::UsersController < ApplicationController
 
   # ユーザー情報の編集フォームを表示
   def edit
+  # ゲストユーザーの場合は、編集を許可しない
+  return if guest_user_restriction_applied?
+  
     respond_to do |format|
       format.js
     end
@@ -17,6 +21,9 @@ class Public::UsersController < ApplicationController
 
   # ユーザー情報を更新
   def update
+    # ゲストユーザーの場合は、更新を許可しない
+    return if guest_user_restriction_applied?
+    
     if @user.update(user_params)
       respond_to do |format|
         format.html { redirect_to @user, notice: 'プロフィールが更新されました。' }
@@ -51,8 +58,16 @@ class Public::UsersController < ApplicationController
     @user = User.find(params[:id])
   end
 
+  # ゲストユーザーかどうかを確認し、ゲストユーザーの場合はアラートを表示してリダイレクト
+  def guest_user_restriction_applied?
+    if @user.guest?
+      redirect_to root_path, alert: 'ゲストユーザーはプロフィールを編集できません。'
+      return true
+    end
+    false
+  end
 
   def user_params
-    params.require(:user).permit(:name, :introduction, :image)
+    params.require(:user).permit(:name, :introduction)
   end
 end

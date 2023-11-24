@@ -1,4 +1,4 @@
-      <%= form_with(url: groups_path, method: "get") do |form| %>
+      <%= form_with(url: groups_path, method: "get", id: "game-title-search-form") do |form| %>
 
         <!-- 上段のセレクトボックス -->
         <div class="mb-3 d-flex justify-content-center">
@@ -34,9 +34,11 @@
 
         <!-- ゲームタイトル -->
         <div class="col-12 mb-3 text-center">
-          <%= form.label 'game_title', 'ゲームタイトル', class: 'form-label', for: 'game_title' %>
-          <%= form.text_field :game_title, value: params[:game_title], name: 'game_title', class: "form-control", placeholder: "ゲームタイトル", id: "game_title" %>
+          <%= form.label 'game_title', 'ゲームタイトル', class: 'form-label', for: 'game_title_field' %>
+          <%= form.text_field :game_title, value: params[:game_title], name: 'game_title', class: "form-control", placeholder: "ゲームタイトル", id: "game_title_field" %>
+          <div id="game_title_suggest_results" class="list-group"></div>
         </div>
+
 
         <!-- ボタン -->
         <div class="col-12 text-center mt-3">
