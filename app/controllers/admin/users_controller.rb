@@ -1,4 +1,5 @@
 class Admin::UsersController < ApplicationController
+  before_action :authenticate_admin!
   before_action :set_user, only: [:show, :update, :search_messages]
   rescue_from ActiveRecord::RecordNotFound, with: :user_not_found
   include Pagy::Backend

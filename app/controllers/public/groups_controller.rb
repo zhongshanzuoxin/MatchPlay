@@ -4,7 +4,7 @@ class Public::GroupsController < ApplicationController
   before_action :ensure_correct_user, only: [:edit, :update, :destroy]
   before_action :check_user_can_create_only_one_group, only: [:new, :create]
   include Pagy::Backend
-  
+
   # グループ一覧を取得するアクション
   def index
     game_title = params[:game_title]
@@ -27,7 +27,7 @@ class Public::GroupsController < ApplicationController
                     .distinct
     end
 
-    @pagy, @groups = pagy(groups, items: 10) 
+    @pagy, @groups = pagy(groups, items: 5)
   end
 
 
@@ -55,6 +55,10 @@ class Public::GroupsController < ApplicationController
       # ユーザーがグループに参加している場合の処理
       @group.users.delete(current_user)
       redirect_to groups_path, notice: "グループから退出しました。"
+      
+      # 通知を送信
+      notification_message = "#{current_user.name}さんがグループから退出しました。"
+      Notification.create(user: @group.owner, content: notification_message)
     else
       # ユーザーがグループに参加していない場合の処理
       redirect_to groups_path, alert: "グループから退出できませんでした。"
@@ -128,7 +132,7 @@ class Public::GroupsController < ApplicationController
   # グループ編集画面
   def edit
   end
-  
+
   # ゲームタイトルのサジェスト機能
   def suggest_game_title
     game_titles = Group.search_by_game_title(params[:term]).limit(5)

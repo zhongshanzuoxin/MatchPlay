@@ -20,20 +20,39 @@ class Public::SessionsController < Devise::SessionsController
   def destroy
     # ゲストユーザーの場合、アカウントを削除
     if current_user&.guest?
+      # ゲストユーザーが参加しているグループを取得
+      groups = Group.where(id: current_user.group_users.pluck(:group_id))
+
+      # グループから退出し、通知を送信
+      groups.each do |group|
+        group.users.delete(current_user)
+        notification_message = "#{current_user.name}さんがグループから退出しました。"
+        Notification.create(user: group.owner, content: notification_message)
+      end
+
+      # ユーザーアカウントを削除
       current_user.destroy
       redirect_to root_path, notice: 'ゲストユーザーのアカウントが削除されました。'
       return
+    else
+      # ユーザーが所有するグループを取得して削除
+      owned_groups = current_user.owned_groups
+      if owned_groups.any?
+        owned_groups.destroy_all
+      end
+
+      # ユーザーが参加しているグループを取得して退出
+      group_users = current_user.group_users
+      if group_users.any?
+        group_users.each do |group_user|
+          group_user.destroy
+        end
+      end
     end
-    # ユーザーが非アクティブの場合、セッションを破棄してログアウト
-    if !current_user&.is_active?
-      sign_out current_user
-      redirect_to new_user_session_path, alert: 'このアカウントは無効になりました。'
-      return
-    end
-    # 通常のログアウト処理
+
+    # Deviseのデフォルトのログアウト処理を実行
     super
   end
-
 
   protected
 
@@ -49,8 +68,5 @@ class Public::SessionsController < Devise::SessionsController
       redirect_to new_user_session_path, alert: 'このアカウントは無効です'
     end
   end
-
-  # def configure_sign_in_params
-  #   devise_parameter_sanitizer.permit(:sign_in, keys: [:attribute])
-  # end
 end
+

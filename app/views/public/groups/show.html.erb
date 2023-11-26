@@ -38,7 +38,7 @@
         <div class="card-footer">
           <%= form_with model: [@group, Message.new], url: group_messages_path(@group), local: false, data: { remote: true } do |f| %>
             <div class="mb-3">
-              <%= f.text_area :content, id: "myInput", class: "form-control" %>
+              <%= f.text_area :content, id: "myInput", autofocus: true, class: "form-control" %>
             </div>
             <%= f.submit "送信", class: "btn btn-primary" %>
           <% end %>

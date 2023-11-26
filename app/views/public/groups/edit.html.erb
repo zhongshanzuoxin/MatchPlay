@@ -2,7 +2,7 @@
   <div class="row justify-content-center">
     <div class="col-12 col-lg-6 mb-3">
       <%= form_with(model: @group, local: true) do |form| %>
-      
+
       <!-- 全体的なエラーメッセージ -->
       <%= render 'public/shared/errors', object: @group %>
 
@@ -55,7 +55,7 @@
         <!-- ボタン -->
         <div class="col-12 text-center mt-3">
           <%= form.submit "グループを更新する", class: "btn btn-primary btn-block mt-2" %>
-          <%= link_to "ルームを削除する", group_path(@group), method: :delete, data: { confirm: "本当に削除しますか？" }, class: "btn btn-danger btn-block mt-2" %>
+          <%= link_to "グループを削除する", group_path(@group), method: :delete, data: { confirm: "本当に削除しますか？" }, class: "btn btn-danger btn-block mt-2" %>
         </div>
       <% end %>
     </div>

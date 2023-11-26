@@ -30,12 +30,18 @@
             <%= link_to 'ユーザーアイコン一覧', admin_profile_icons_path, class: 'btn btn-dark me-2' %>
           </li>
           <li class="nav-item">
+            <%= link_to 'タグの追加', admin_tags_path, class: 'btn btn-dark me-2' %>
+          </li>
+          <li class="nav-item">
             <%= link_to 'ログアウト', destroy_admin_session_path, method: :get, class: 'btn btn-dark me-2' %>
           </li>
 
 
         <!-- ユーザーがサインインしている場合のメニュー -->
         <% elsif user_signed_in? %>
+          <li class="nav-item">
+            <%= link_to 'MatchPlayについて', about_path, class: "btn btn-dark me-2" %>
+          </li>
           <li class="nav-item">
             <%= link_to 'マイページ', user_path(current_user.id), class: 'btn btn-dark me-2' %>
           </li>
@@ -54,11 +60,18 @@
             <% end %>
           </li>
           <li class="nav-item">
-            <%= link_to 'ログアウト', destroy_user_session_path, method: :get, class: 'btn btn-dark me-2' %>
+            <% is_part_of_group = current_user.owned_groups.exists? || current_user.groups.exists? %>
+            <%= link_to 'ログアウト', destroy_user_session_path, class: 'btn btn-dark me-2', 
+            data: { method: :delete, confirm: '本当にログアウトしますか？グループを所有している場合は削除され、参加しているグループからは退出されます。' },
+            id: 'logout-link',
+            data: { part_of_group: is_part_of_group } %>
           </li>
 
         <!-- サインインしていない場合のメニュー -->
         <% else %>
+          <li class="nav-item">
+            <%= link_to 'MatchPlayについて', about_path, class: "btn btn-dark me-2" %>
+          </li>
           <li class="nav-item">
             <%= link_to '新規登録', new_user_registration_path, class: 'btn btn-dark me-2' %>
           </li>

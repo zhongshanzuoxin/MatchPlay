@@ -20,3 +20,4 @@ import "./block_users";
 import "./notification";
 import "./admin_suggest";
 import "./game_title_suggest";
+import "./log_out";

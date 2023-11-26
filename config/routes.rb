@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   namespace :admin do
     root to: "homes#top"
     resources :profile_icons, only: [:new, :index, :create, :destroy]
+    resources :tags, only: [:index, :create, :destroy]
     resources :users, only: [:index, :show, :update] do
       get 'search_messages', on: :member
       collection do
@@ -33,6 +34,7 @@ Rails.application.routes.draw do
   # ユーザー用のルーティングスコープ
   scope module: :public do
     root to: "homes#top"
+    get "about", to: "homes#about"
     get 'users/dummy', to: 'users#dummy'
     post 'notifications/mark_as_read', to: 'notifications#mark_as_read'
     

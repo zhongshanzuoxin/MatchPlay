@@ -1,27 +1,31 @@
-// メッセージ更新用のインターバルIDを保持する変数
-var messageUpdateInterval;
-
 document.addEventListener('turbolinks:load', function () {
+  var messageUpdateInterval;
   var groupElement = document.getElementById("group-data");
+  var isSubmitting = false; // メッセージ送信中かどうかを示すフラグ
+  var messagesContainer = document.getElementById("messages");
 
   if (groupElement) {
     var group_id = groupElement.getAttribute("data-group-id");
-    var messagesContainer = document.getElementById("messages");
 
     var updateMessages = function () {
       if (messagesContainer) {
         fetch('/groups/' + group_id + '/messages')
           .then(response => {
             if (!response.ok) {
-              if (response.ok) {
-                window.location.href = '/';
-              }
               throw new Error('ネットワークエラー');
             }
             return response.text();
           })
           .then(text => {
-            messagesContainer.innerHTML = text;
+            var parser = new DOMParser();
+            var newMessages = parser.parseFromString(text, "text/html");
+            var newMessagesContainer = newMessages.getElementById("messages");
+
+            if (newMessagesContainer) {
+              while (newMessagesContainer.firstChild) {
+                messagesContainer.appendChild(newMessagesContainer.firstChild);
+              }
+            }
           })
           .catch(error => {
             console.error('メッセージの取得に失敗しました:', error);
@@ -29,41 +33,58 @@ document.addEventListener('turbolinks:load', function () {
       }
     };
 
-    // 初回のメッセージ更新を実行し、5秒ごとの更新をスケジュール
     updateMessages();
     messageUpdateInterval = setInterval(updateMessages, 5000);
   }
 
-  // チャットフォームの送信成功後に入力フィールドをクリア
   var form = document.querySelector('form[data-remote="true"]');
   if (form) {
-    form.addEventListener('ajax:success', function () {
-      document.getElementById("myInput").value = '';
-    });
-  }
-});
+    var submitButton = form.querySelector('[type="submit"]');
+    var chatInput = document.getElementById("myInput");
 
-// ページ遷移時にメッセージ更新のインターバルをクリア
-document.addEventListener('turbolinks:before-cache', function () {
-  if (messageUpdateInterval) {
-    clearInterval(messageUpdateInterval);
-  }
-});
+    if (submitButton && chatInput) {
+      form.addEventListener('ajax:success', function () {
+        chatInput.value = '';
+        isSubmitting = false;
+        submitButton.disabled = false;
+      });
 
-// フォームの送信に失敗した際のエラーハンドリング
-document.addEventListener('ajax:error', function(event) {
-  var detail = event.detail;
-  var xhr = detail[2]; // XMLHttpRequestオブジェクトを取得
-  var response;
-
-  try {
-    response = JSON.parse(xhr.responseText);
-  } catch (e) {
-    console.error('レスポンスの解析中にエラーが発生しました:', e);
-    return;
+      chatInput.addEventListener("keydown", function(event) {
+        if (event.key === "Enter" && !event.isComposing) {
+          event.preventDefault();
+          if (chatInput.value.trim() !== "" && !isSubmitting) {
+            isSubmitting = true;
+            form.submit();
+          }
+        }
+      });
+    }
   }
 
-  if (response && response.errors) {
-    console.error('エラーが発生しました:', response.errors);
-  }
+  document.addEventListener('turbolinks:before-cache', function () {
+    if (messageUpdateInterval) {
+      clearInterval(messageUpdateInterval);
+    }
+  });
+
+  document.addEventListener('ajax:error', function(event) {
+    var detail = event.detail;
+    var xhr = detail[2];
+    var response;
+
+    try {
+      response = JSON.parse(xhr.responseText);
+    } catch (e) {
+      console.error('レスポンスの解析中にエラーが発生しました:', e);
+      return;
+    }
+
+    if (response && response.errors) {
+      console.error('エラーが発生しました:', response.errors);
+    }
+    isSubmitting = false;
+    if (submitButton) {
+      submitButton.disabled = false;
+    }
+  });
 });
