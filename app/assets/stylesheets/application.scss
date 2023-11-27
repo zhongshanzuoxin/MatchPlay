@@ -11,6 +11,10 @@ body {
   background-color: #6c757d29;
 }
 
+/* Aboutの画像の枠線 */
+.custom-border {
+  border: 1px solid #000;
+}
 
 /* チャット欄の高さの設定 */
 .chat-container {
@@ -18,7 +22,7 @@ body {
   max-height: 270px;
   overflow-y: auto;
   display: flex;
-  flex-direction: column-reverse; 
+  flex-direction: column-reverse;
 }
 
 /* アイコンのサイズ調整 */
@@ -80,7 +84,7 @@ body {
   .navbar-toggler-icon-custom {
     background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255, 255, 255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
   }
-  
+
   /* ドロップダウンメニューの項目に関するスタイル */
   .dropdown-item {
     word-wrap: break-word;

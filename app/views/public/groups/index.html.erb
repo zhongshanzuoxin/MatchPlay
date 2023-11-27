@@ -36,6 +36,7 @@
                   <% if group.users.include?(current_user) %>
                     <!-- 参加している場合の表示 -->
                     <%= link_to "参加中のグループを見る", group_path(group), class: "btn btn-primary btn-sm" %>
+                    <%= link_to "参加中のグループを退出", leave_group_path(group), method: :delete, class: "btn btn-danger btn-sm" %>
                   <% else %>
                     <% if current_user.groups.any? && !group.users.include?(current_user) %>
                       <!-- 他のグループに参加中の場合の表示 -->

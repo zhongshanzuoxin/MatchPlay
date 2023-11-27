@@ -10,11 +10,11 @@
 
       <div class="mb-4">
         <label for="email" class="form-label">メールアドレス</label>
-          <%= f.text_field :email, id: "email", class: "form-control", autofocus: true, autocomplete: "email", placeholder: "admin@admin" %>
+          <%= f.text_field :email, id: "email", class: "form-control", autofocus: true, autocomplete: "email" %>
       </div>
       <div class="mb-4">
         <label for="password" class="form-label">パスワード</label>
-          <%= f.password_field :password, id: "password", class: "form-control", autocomplete: "current-password", placeholder: "admin1" %>
+          <%= f.password_field :password, id: "password", class: "form-control", autocomplete: "current-password" %>
       </div>
       <div class="mb-4 text-center">
           <%= f.submit "ログイン", class: "btn btn-primary btn-block col-12" %>
