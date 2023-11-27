@@ -17,7 +17,6 @@ Rails.application.routes.draw do
 
   # 管理者用のルーティングスコープ
   namespace :admin do
-    root to: "homes#top"
     resources :profile_icons, only: [:new, :index, :create, :destroy]
     resources :tags, only: [:index, :create, :destroy]
     resources :users, only: [:index, :show, :update] do
