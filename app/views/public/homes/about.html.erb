@@ -18,6 +18,8 @@
                 <li>仲間を探してマッチングし、一緒にゲームを楽しんでください。</li>
             </ol>
             <p class="mt-3">※ゲストアカウントはログアウト時にアカウントが削除されます。</p>
+            <%= link_to 'ゲストログイン', guest_login_path, method: :post, class: "btn btn-secondary" %>
+            <%= link_to "新規登録", new_user_registration_path, class: "btn btn-primary" %>
         </div>
         <div class="col-md-6">
             <%= image_tag 'image2.png', class: 'img-fluid custom-border rounded' %>
