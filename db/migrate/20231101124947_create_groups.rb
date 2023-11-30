@@ -3,7 +3,6 @@ class CreateGroups < ActiveRecord::Migration[6.1]
     create_table :groups do |t|
       t.text :introduction
       t.text :game_title, null: false
-      t.string :tag
       t.bigint :owner_id, null: false
       t.integer :max_users, null: false
 

@@ -20,11 +20,11 @@
         <div class="mb-3 row justify-content-center">
           <div class="col-6 text-center"> <!-- 左側の選択 -->
             <%= form.label :tag_ids, 'タグを選択', class: 'form-label', for: 'tagSelect1' %>
-            <%= form.select :tag_ids, Tag.all.map { |tag| [tag.tag_name, tag.id] }, { include_blank: '指定しない' }, { class: 'form-select', id: 'tagSelect1', name: 'group[tag_ids][]' } %>
+            <%= form.select :tag_ids, Tag.all.map { |tag| [tag.tag_name, tag.id] }, { include_blank: '指定しない', selected: @selected_tag_ids[:tag_ids1] }, { class: 'form-select', id: 'tagSelect1', name: 'group[tag_ids1][]' } %>
           </div>
           <div class="col-6 text-center"> <!-- 右側の選択 -->
             <%= form.label :tag_ids, 'タグを選択', class: 'form-label', for: 'tagSelect2' %>
-            <%= form.select :tag_ids, Tag.all.map { |tag| [tag.tag_name, tag.id] }, { include_blank: '指定しない' }, { class: 'form-select', id: 'tagSelect2', name: 'group[tag_ids][]' } %>
+            <%= form.select :tag_ids, Tag.all.map { |tag| [tag.tag_name, tag.id] }, { include_blank: '指定しない', selected: @selected_tag_ids[:tag_ids2] }, { class: 'form-select', id: 'tagSelect2', name: 'group[tag_ids2][]' } %>
           </div>
         </div>
 
@@ -32,11 +32,11 @@
         <div class="mb-3 row justify-content-center">
           <div class="col-6 text-center"> <!-- 左側の選択 -->
             <%= form.label :tag_ids, 'タグを選択', class: 'form-label', for: 'tagSelect3' %>
-            <%= form.select :tag_ids, Tag.all.map { |tag| [tag.tag_name, tag.id] }, { include_blank: '指定しない' }, { class: 'form-select', id: 'tagSelect3', name: 'group[tag_ids][]' } %>
+            <%= form.select :tag_ids, Tag.all.map { |tag| [tag.tag_name, tag.id] }, { include_blank: '指定しない', selected: @selected_tag_ids[:tag_ids3] }, { class: 'form-select', id: 'tagSelect3', name: 'group[tag_ids3][]' } %>
           </div>
           <div class="col-6 text-center"> <!-- 右側の選択 -->
             <%= form.label :tag_ids, 'タグを選択', class: 'form-label', for: 'tagSelect4' %>
-            <%= form.select :tag_ids, Tag.all.map { |tag| [tag.tag_name, tag.id] }, { include_blank: '指定しない' }, { class: 'form-select', id: 'tagSelect4', name: 'group[tag_ids][]' } %>
+            <%= form.select :tag_ids, Tag.all.map { |tag| [tag.tag_name, tag.id] }, { include_blank: '指定しない', selected: @selected_tag_ids[:tag_ids4] }, { class: 'form-select', id: 'tagSelect4', name: 'group[tag_ids4][]' } %>
           </div>
         </div>
 

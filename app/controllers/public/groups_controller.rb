@@ -1,6 +1,6 @@
 class Public::GroupsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_group, only: [:edit, :update, :show, :destroy, :ensure_correct_user, :join, :leave]
+  before_action :set_group, only: [:edit, :update, :show, :destroy, :join, :leave, :user_count, :user_list]
   before_action :ensure_correct_user, only: [:edit, :update, :destroy]
   before_action :check_user_can_create_only_one_group, only: [:new, :create]
   include Pagy::Backend
@@ -30,20 +30,18 @@ class Public::GroupsController < ApplicationController
     @pagy, @groups = pagy(groups, items: 5)
   end
 
-
   # グループに参加するアクション
   def join
-    # ユーザーを一時的にグループに追加してバリデーションを実行
+    if @group.users.include?(current_user)
+      redirect_to groups_path, alert: "すでにグループに参加しています。"
+      return
+    end
+
     @group.users << current_user
     if @group.valid?(:join)
-      # バリデーションが成功した場合
+      send_notification(@group.owner, "#{current_user.name}さんがあなたのグループに参加しました。")
       redirect_to group_path(@group), notice: "グループに参加しました。"
-
-      # 通知を送信
-      notification_message = "#{current_user.name}さんがあなたのグループに参加しました。"
-      Notification.create(user: @group.owner, content: notification_message)
     else
-      # バリデーションが失敗した場合
       @group.users.delete(current_user)
       redirect_to groups_path, alert: "このグループは既に満員です。"
     end
@@ -51,33 +49,23 @@ class Public::GroupsController < ApplicationController
 
   # グループから退出するアクション
   def leave
-    if GroupUser.exists?(group_id: @group.id, user_id: current_user.id)
-      # ユーザーがグループに参加している場合の処理
-      @group.users.delete(current_user)
+    if @group.users.delete(current_user)
+      send_notification(@group.owner, "#{current_user.name}さんがグループから退出しました。")
       redirect_to groups_path, notice: "グループから退出しました。"
-      
-      # 通知を送信
-      notification_message = "#{current_user.name}さんがグループから退出しました。"
-      Notification.create(user: @group.owner, content: notification_message)
     else
-      # ユーザーがグループに参加していない場合の処理
       redirect_to groups_path, alert: "グループから退出できませんでした。"
     end
   end
 
   # グループのユーザー数を取得してJSONで返すアクション
   def user_count
-    group = Group.find(params[:id])
-    # ユーザー数を計算（オーナーも含めるため +1）
-    user_count = group.users.count + 1
-    render json: { user_count: user_count, max_users: group.max_users }
+    user_count = @group.users.count + 1
+    render json: { user_count: user_count, max_users: @group.max_users }
   end
 
   # グループのユーザーリストを取得してJSONで返すアクション
   def user_list
-    group = Group.find(params[:id])
-    users = group.users
-    # ユーザーリストをJSON形式で返す
+    users = @group.users
     render json: { user_list: users.map { |user| { id: user.id, name: user.name } } }
   end
 
@@ -94,12 +82,26 @@ class Public::GroupsController < ApplicationController
   # グループ新規作成画面
   def new
     @group = Group.new
+    @selected_tag_ids = { tag_ids1: [], tag_ids2: [], tag_ids3: [], tag_ids4: [] }
   end
 
   # グループを作成するアクション
   def create
-    @group = Group.new(group_params)
+    @group = Group.new(group_params.except(:tag_ids1, :tag_ids2, :tag_ids3, :tag_ids4))
     @group.owner_id = current_user.id
+
+    # タグのIDを結合して一意の配列にする
+    @selected_tag_ids = {
+      tag_ids1: params[:group][:tag_ids1],
+      tag_ids2: params[:group][:tag_ids2],
+      tag_ids3: params[:group][:tag_ids3],
+      tag_ids4: params[:group][:tag_ids4]
+    }
+
+    tag_ids = @selected_tag_ids.values.flatten.uniq
+    tag_ids.each do |tag_id|
+      @group.tags << Tag.find(tag_id) unless tag_id.blank?
+    end
 
     if @group.save
       redirect_to group_path(@group), notice: 'グループが作成されました'
@@ -111,18 +113,24 @@ class Public::GroupsController < ApplicationController
 
   # グループを更新するアクション
   def update
-    if @group.update(group_params)
-      redirect_to group_path(@group), notice: 'グループが更新されました'
-    else
-      flash.now[:alert] = 'グループの更新に失敗しました'
-      render :edit
+    ActiveRecord::Base.transaction do
+      if @group.update(group_params)
+        # タグの更新処理
+        tag_ids = params[:group][:tag_ids].reject(&:blank?).map(&:to_i).uniq
+        @group.tags = Tag.where(id: tag_ids)
+
+        redirect_to group_path(@group), notice: 'グループが更新されました'
+      else
+        flash.now[:alert] = 'グループの更新に失敗しました'
+        render :edit
+      end
     end
   end
 
+
   # グループを削除するアクション
   def destroy
-    if @group.owner_id == current_user.id
-      @group.destroy
+    if @group.destroy
       redirect_to root_path, notice: 'グループが削除されました'
     else
       redirect_to root_path, alert: 'グループを削除する権限がありません'
@@ -141,13 +149,9 @@ class Public::GroupsController < ApplicationController
 
   private
 
-  # ユーザーをセット
   def set_group
     @group = Group.find_by(id: params[:id])
-    if @group.nil?
-      redirect_to root_path, alert: "指定されたグループは存在しません。"
-      return
-    end
+    redirect_to root_path, alert: "指定されたグループは存在しません。" if @group.nil?
   end
 
   # グループの編集権限
@@ -162,7 +166,12 @@ class Public::GroupsController < ApplicationController
     end
   end
 
+  # 通知の作成
+  def send_notification(user, message)
+    Notification.create(user: user, content: message)
+  end
+
   def group_params
-    params.require(:group).permit(:introduction, :game_title, :max_users, tag_ids: [])
+    params.require(:group).permit(:introduction, :game_title, :max_users)
   end
 end

@@ -72,7 +72,6 @@ ActiveRecord::Schema.define(version: 2023_11_24_110957) do
   create_table "groups", force: :cascade do |t|
     t.text "introduction"
     t.text "game_title", null: false
-    t.string "tag"
     t.integer "owner_id", null: false
     t.integer "max_users", null: false
     t.datetime "created_at", precision: 6, null: false
