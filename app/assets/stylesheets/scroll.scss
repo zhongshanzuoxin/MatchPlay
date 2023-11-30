@@ -1,0 +1,21 @@
+#scrollToTopBtn {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 99;
+  background-color: #44d62c; 
+  color: #fff; /* ボタンのテキスト色 */
+  width: 50px; /* ボタンの幅 */
+  height: 50px; /* ボタンの高さ */
+  border-radius: 50%; /* ボタンを丸くする */
+  text-align: center;
+  line-height: 50px; /* テキストの垂直中央揃え */
+  font-size: 24px; /* テキストのフォントサイズ */
+  cursor: pointer;
+  transition: opacity 0.3s ease; /* フェードイン/フェードアウトのエフェクト */
+}
+
+#scrollToTopBtn:hover {
+  background-color: #3ca624; /* ホバー時の背景色を少し暗くする */
+}

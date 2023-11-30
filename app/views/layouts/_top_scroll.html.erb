@@ -1,0 +1,40 @@
+
+<button id="scrollToTopBtn" onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></button>
+
+<script>
+var scrollToTopBtn = document.getElementById("scrollToTopBtn");
+var scrolling = false;
+
+// ページのスクロール位置を監視
+window.onscroll = function() {
+  scrollFunction();
+};
+
+function scrollFunction() {
+  // スクロール量が一定以上に達したらボタンを表示
+  if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+    if (!scrolling) {
+      scrollToTopBtn.style.opacity = 0;
+      scrollToTopBtn.style.display = "block";
+      setTimeout(function() {
+        scrollToTopBtn.style.opacity = 1;
+      }, 10);
+      scrolling = true;
+    }
+  } else {
+    if (scrolling) {
+      scrollToTopBtn.style.opacity = 0;
+      setTimeout(function() {
+        scrollToTopBtn.style.display = "none";
+      }, 300);
+      scrolling = false;
+    }
+  }
+}
+
+// ボタンがクリックされたときにトップにスクロール
+function scrollToTop() {
+  document.body.scrollTop = 0;
+  document.documentElement.scrollTop = 0; 
+}
+</script>

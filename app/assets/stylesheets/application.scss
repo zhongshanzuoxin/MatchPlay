@@ -1,6 +1,7 @@
 
-/* Pagyスタイルの読み込み */
+/* 他のスタイルの読み込み */
 @import "pagy";
+@import "scroll";
 
 /* Google Fontsの読み込み */
 @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700&display=swap');
@@ -22,7 +23,7 @@ body {
   max-height: 270px;
   overflow-y: auto;
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column-reverse; 
 }
 
 /* アイコンのサイズ調整 */
@@ -42,14 +43,14 @@ body {
   border-radius: 5px;
 }
 
-/* ダークなボタンのスタイル設定 */
+/* ダークボタンのスタイル設定 */
 .btn-dark {
   background-color: #000000; /* 背景色設定 */
   border: none; /* ボーダーをなしに設定 */
   cursor: pointer;
 }
 
-/* ダークなボタンのホバースタイル設定 */
+/* ダークボタンのホバースタイル設定 */
 .btn-dark:hover {
   text-decoration: underline; /* カーソルがボタンに合った際に下線を表示 */
   color: #44d62c; /* ホバー時の文字色設定 */
@@ -84,7 +85,7 @@ body {
   .navbar-toggler-icon-custom {
     background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255, 255, 255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
   }
-
+  
   /* ドロップダウンメニューの項目に関するスタイル */
   .dropdown-item {
     word-wrap: break-word;

@@ -12,7 +12,21 @@ class Admin::SessionsController < Devise::SessionsController
   # def create
   #   super
   # end
+  
+  # 多分余りないと思いますがゲストログイン中に管理者ログインした場合ゲストが消えるように設定
+  def create
+    # ゲストユーザーアカウントがログイン中かどうかを確認
+    if current_user&.guest?
+      # ゲストユーザーの場合、セッションを削除
+      sign_out current_user
+      redirect_to admin_session_path, notice: 'ゲストユーザーアカウントが削除されました。'
+      return
+    end
 
+    # 通常のログイン処理を実行
+    super
+  end
+  
   # DELETE /resource/sign_out
   # def destroy
   #   super
