@@ -39,3 +39,4 @@ class Admin::ProfileIconsController < ApplicationController
     params.require(:profile_icon).permit(:image)
   end
 end
+
