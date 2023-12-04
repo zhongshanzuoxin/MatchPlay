@@ -2,12 +2,13 @@
   <h1>アイコン一覧</h1>
 
   <% if @profile_icons.any? %>
-
     <div class="row justify-content-center mt-3">
       <% @profile_icons.each do |icon| %>
         <div class="col-auto">
           <div class="card mb-4">
-            <%= image_tag(icon.image.variant(resize_to_limit: [100, 100])) if icon.image.attached? %>
+            <% if icon.image.attached? %>
+              <%= image_tag(icon.image.variant(resize_to_limit: [100, 100]).processed) %>
+            <% end %>
             <%= link_to '削除', admin_profile_icon_path(icon), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'btn btn-danger' %>
           </div>
         </div>
@@ -16,8 +17,8 @@
   <% else %>
     <p>アップロードされたアイコンはありません。</p>
   <% end %>
-  
+
   <%= render "layouts/pagy" %>
-  
+
   <%= link_to '新しいアイコンをアップロード', new_admin_profile_icon_path, class: 'btn btn-primary mt-3' %>
 </div>
