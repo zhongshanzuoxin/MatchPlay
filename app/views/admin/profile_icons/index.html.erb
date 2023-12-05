@@ -7,7 +7,8 @@
         <div class="col-auto">
           <div class="card mb-4">
             <% if icon.image.attached? %>
-              <%= image_tag(icon.image.variant(resize_to_limit: [100, 100]).processed) %>
+              <!-- リサイズされた画像のURLを使用して画像を表示 -->
+              <%= image_tag(icon.resized_image_url) %>
             <% end %>
             <%= link_to '削除', admin_profile_icon_path(icon), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'btn btn-danger' %>
           </div>
