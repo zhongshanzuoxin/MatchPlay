@@ -31,6 +31,6 @@ https://drive.google.com/file/d/159uXAxQ8ZLKeCMwmlz691ATdXNa1xXZu/view?usp=shari
 ## 使用素材
 - FLAT ICON DESIGN
 - http://flat-icon-design.com/
-- 
+
 - Hatchful
 - https://www.shopify.com/jp/tools/logo-maker
